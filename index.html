@@ -39,10 +39,11 @@
   .wrap{ max-width:var(--maxw); margin:0 auto; }
   .wide{ max-width:980px; margin:0 auto; }
 
-  .masthead{ max-width:var(--maxw); margin:0 auto; padding:100px 0 0; }
-  .masthead h1{ font-family:var(--f-head); font-weight:600; font-size:56px; line-height:1.05; margin:0; letter-spacing:-0.02em; }
+  .masthead{ max-width:var(--maxw); margin:0 auto; padding:100px 0 0; text-align:center; }
+  .masthead h1{ font-family:var(--f-head); font-weight:700; font-size:56px; line-height:1.05; margin:0; letter-spacing:-0.02em; }
+  .masthead .sub{ font-family:var(--f-mono); font-size:11px; color:var(--mute); letter-spacing:.08em; margin-top:14px; }
 
-  nav.main{ display:flex; gap:4px; margin:44px auto 56px; flex-wrap:wrap; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:7px 0; max-width:var(--maxw); }
+  nav.main{ display:flex; justify-content:center; gap:4px; margin:44px auto 56px; flex-wrap:wrap; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:7px 0; max-width:var(--maxw); }
   nav.main span{ cursor:pointer; color:var(--mute); font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; padding:7px 12px; border-radius:999px; transition:color .15s, background .15s; }
   nav.main span:hover{ color:var(--ink); }
   nav.main span.cur{ color:var(--accent); background:var(--accent-soft); }
@@ -55,8 +56,9 @@
   .sec-note{ color:var(--ink-soft); font-size:15px; line-height:1.7; margin:0 0 40px; max-width:52ch; }
 
   /* week index — hairline rules, no surfaces */
-  .row{ display:flex; align-items:center; gap:24px; padding:20px 0; border-top:1px solid var(--line-soft); cursor:pointer; }
+  .row{ display:flex; align-items:center; gap:24px; padding:20px 10px; margin:0 -10px; border-top:1px solid var(--line-soft); cursor:pointer; border-radius:10px; transition:padding-left .14s ease, background .14s; }
   .row:last-child{ border-bottom:1px solid var(--line-soft); }
+  .row:hover{ padding-left:18px; background:var(--card); }
   .row .num{ font-family:var(--f-mono); font-size:12px; color:var(--mute); width:24px; flex:none; }
   .row .topic{ flex:1; }
   .row .topic .tt{ font-family:var(--f-head); font-weight:600; font-size:20px; line-height:1.15; transition:color .14s; letter-spacing:-0.01em; }
@@ -74,17 +76,6 @@
     display:grid; place-items:center; color:var(--mute);
     font-family:var(--f-mono); font-size:10px; text-align:center; padding:10px; letter-spacing:.04em;
   }
-  .btn{
-    font-family:var(--f-body); font-weight:500; font-size:14px; line-height:1;
-    background:var(--accent); color:#fff; border:1px solid var(--accent);
-    border-radius:8px; padding:12px 20px; cursor:pointer; white-space:nowrap;
-    display:inline-flex; align-items:center; gap:8px; transition:filter .15s, transform .08s;
-  }
-  .btn:hover{ filter:brightness(1.07); }
-  .btn:active{ transform:translateY(1px); }
-  .btn.ghost{ background:transparent; color:var(--accent); }
-  .btn.disabled{ background:transparent; color:var(--mute); border-color:transparent; padding-left:0; cursor:default; pointer-events:none; }
-
   /* week detail */
   .back{ font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); cursor:pointer; display:inline-flex; gap:7px; margin-bottom:28px; align-items:center; }
   .back:hover{ color:var(--accent); }
@@ -93,7 +84,24 @@
   .wd-head h2{ font-family:var(--f-head); font-weight:700; font-size:40px; margin:0; letter-spacing:-0.025em; }
   .wd-meta{ display:flex; gap:26px; flex-wrap:wrap; font-size:13px; color:var(--mute); padding-bottom:22px; border-bottom:1px solid var(--line-soft); }
   .wd-meta b{ color:var(--ink); font-weight:500; }
-  .wd-pdf{ height:320px; margin:28px 0; }
+
+  /* week detail — downloads */
+  .dl-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 8px; }
+  .dl-card{ position:relative; display:block; border:1px solid var(--line); border-radius:14px; background:var(--card); padding:20px 44px 18px 20px; text-decoration:none; color:inherit; transition:border-color .15s, transform .12s; }
+  .dl-card.avail{ cursor:pointer; }
+  .dl-card.avail:hover{ border-color:var(--accent); transform:translateY(-3px); }
+  .dl-card.avail:active{ transform:translateY(-1px); }
+  .dl-card.dim{ cursor:default; }
+  .dl-badge{ width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-family:var(--f-mono); font-size:9px; letter-spacing:.02em; background:var(--paper-2); color:var(--mute); transition:background .15s, color .15s; }
+  .dl-card.avail .dl-badge{ background:var(--accent-soft); color:var(--accent); }
+  .dl-label{ display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); margin-top:16px; }
+  .dl-name{ font-family:var(--f-head); font-weight:600; font-size:16px; letter-spacing:-0.01em; margin-top:6px; line-height:1.3; }
+  .dl-status{ font-family:var(--f-mono); font-size:10px; letter-spacing:.04em; color:var(--mute); margin-top:10px; }
+  .dl-card.avail .dl-status{ color:var(--accent); }
+  .dl-arrow{ position:absolute; top:20px; right:20px; color:var(--mute); font-size:13px; transition:transform .14s, color .14s; }
+  .dl-card.avail .dl-arrow{ color:var(--accent); }
+  .dl-card.avail:hover .dl-arrow{ transform:translate(3px,-3px); }
+
   .subhead{ font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); margin:44px 0 16px; }
   .viz-inline{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
   .viz-card{ cursor:pointer; }
@@ -149,6 +157,7 @@
     .masthead h1{ font-size:42px; }
     .viz-inline{ grid-template-columns:1fr 1fr; gap:20px; }
     .gal{ grid-template-columns:1fr 1fr; gap:20px; }
+    .dl-grid{ grid-template-columns:1fr; }
     .viz-detail .vlayout{ grid-template-columns:1fr; gap:26px; }
   }
   @media(max-width:520px){
@@ -161,6 +170,7 @@
   <div class="canvas">
     <div class="masthead">
       <h1>Control Systems&nbsp;I</h1>
+      <div class="sub">tibrunner@ethz.ch</div>
     </div>
 
     <nav class="main" id="nav">
@@ -183,14 +193,13 @@
         <div class="wd-eyebrow" id="wd-num">WEEK 05</div>
         <div class="wd-head">
           <h2 id="wd-title">Time-Domain Response</h2>
-          <a id="wd-dl" class="btn">↓ &nbsp;Download slides (PDF)</a>
         </div>
         <div class="wd-meta">
-          <span><b id="wd-date">Sep 28, 2026</b> &nbsp;lecture</span>
-          <span id="wd-pages"><b>—</b> &nbsp;posts on the day</span>
-          <span id="wd-hw"></span>
+          <span><b id="wd-date">Sep 28, 2026</b> &nbsp;exercise session</span>
         </div>
-        <div class="ph wd-pdf">slides.pdf — embedded viewer once uploaded</div>
+
+        <div class="subhead">Downloads</div>
+        <div class="dl-grid" id="wd-downloads"></div>
 
         <div class="subhead" id="wd-viz-h">Visualisations for this week</div>
         <div class="viz-inline" id="wd-viz"></div>
@@ -268,8 +277,10 @@
   /* =====================================================================
      EDITING GUIDE — update content here each week
      ---------------------------------------------------------------------
-     • To post a week's slides: save the PDF as  slides/week-05.pdf
-       (match the two-digit week number) and set  pdf:true  on that week.
+     • Exercise slides: save as  slides/week-05-exercise.pdf  (match the
+       two-digit week number) and set  ex:true  on that week.
+     • Problem set: save as  slides/week-05-problemset.pdf  and set
+       hw.ps:true. Solutions: slides/week-05-solutions.pdf, hw.sol:true.
      • Add a week by appending to WEEKS. Give it an  hw  field to attach
        a problem set due that week (omit  hw  if none).
      • Visualisations: add {k:"unique-key", label:"Name"} to a week's viz[].
@@ -277,16 +288,16 @@
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
-    {n:1,  t:"Introduction & System Modeling", date:"Aug 31", pdf:false, viz:[], hw:{t:"Problem Set 1 — Modeling", due:"Sep 11"}},
-    {n:2,  t:"Laplace Transforms Review",      date:"Sep 7",  pdf:false, viz:[{k:"laplace", label:"Laplace pole map"}]},
-    {n:3,  t:"Transfer Functions",             date:"Sep 14", pdf:false, viz:[{k:"tfbuild", label:"Transfer-function builder"}], hw:{t:"Problem Set 2 — Transfer Functions", due:"Sep 25"}},
-    {n:4,  t:"Block Diagrams & Signal Flow",   date:"Sep 21", pdf:false, viz:[{k:"block", label:"Block-diagram reduction"}]},
-    {n:5,  t:"Time-Domain Response",           date:"Sep 28", pdf:false, viz:[{k:"step2", label:"Second-order step response", live:true},{k:"impulse", label:"Step vs impulse"}], hw:{t:"Problem Set 3 — Time Response", due:"Oct 2"}},
-    {n:6,  t:"Stability & Routh–Hurwitz",      date:"Oct 5",  pdf:false, viz:[{k:"routh", label:"Routh array explorer"}]},
-    {n:7,  t:"Root Locus",                     date:"Oct 12", pdf:false, viz:[{k:"rlocus", label:"Root-locus plot"},{k:"poledrag", label:"Pole / zero drag"}], hw:{t:"Problem Set 4 — Root Locus", due:"Oct 16"}},
-    {n:8,  t:"Frequency Response & Bode",      date:"Oct 19", pdf:false, viz:[{k:"bode", label:"Bode plot"}], hw:{t:"Problem Set 5 — Frequency Domain", due:"Oct 30"}},
-    {n:9,  t:"Nyquist Criterion",              date:"Oct 26", pdf:false, viz:[]},
-    {n:10, t:"PID Controller Design",          date:"Nov 2",  pdf:false, viz:[{k:"pid", label:"PID tuner"}]},
+    {n:1,  t:"Introduction & System Modeling", date:"Aug 31", ex:false, viz:[], hw:{t:"Problem Set 1 — Modeling", due:"Sep 11", ps:false, sol:false}},
+    {n:2,  t:"Laplace Transforms Review",      date:"Sep 7",  ex:false, viz:[{k:"laplace", label:"Laplace pole map"}]},
+    {n:3,  t:"Transfer Functions",             date:"Sep 14", ex:false, viz:[{k:"tfbuild", label:"Transfer-function builder"}], hw:{t:"Problem Set 2 — Transfer Functions", due:"Sep 25", ps:false, sol:false}},
+    {n:4,  t:"Block Diagrams & Signal Flow",   date:"Sep 21", ex:false, viz:[{k:"block", label:"Block-diagram reduction"}]},
+    {n:5,  t:"Time-Domain Response",           date:"Sep 28", ex:false, viz:[{k:"step2", label:"Second-order step response", live:true},{k:"impulse", label:"Step vs impulse"}], hw:{t:"Problem Set 3 — Time Response", due:"Oct 2", ps:false, sol:false}},
+    {n:6,  t:"Stability & Routh–Hurwitz",      date:"Oct 5",  ex:false, viz:[{k:"routh", label:"Routh array explorer"}]},
+    {n:7,  t:"Root Locus",                     date:"Oct 12", ex:false, viz:[{k:"rlocus", label:"Root-locus plot"},{k:"poledrag", label:"Pole / zero drag"}], hw:{t:"Problem Set 4 — Root Locus", due:"Oct 16", ps:false, sol:false}},
+    {n:8,  t:"Frequency Response & Bode",      date:"Oct 19", ex:false, viz:[{k:"bode", label:"Bode plot"}], hw:{t:"Problem Set 5 — Frequency Domain", due:"Oct 30", ps:false, sol:false}},
+    {n:9,  t:"Nyquist Criterion",              date:"Oct 26", ex:false, viz:[]},
+    {n:10, t:"PID Controller Design",          date:"Nov 2",  ex:false, viz:[{k:"pid", label:"PID tuner"}]},
   ];
 
   // ---- weeks list ----
@@ -297,7 +308,7 @@
       <div class="num">${String(w.n).padStart(2,'0')}</div>
       <div class="topic"><div class="tt">${w.t}</div><div class="date">LECTURE · ${w.date.toUpperCase()}, ${YEAR}</div></div>
       <div class="act">
-        <span class="tag ${w.pdf?'':'dim'}">${w.pdf?'PDF ↓':'soon'}</span>
+        <span class="tag ${w.ex?'':'dim'}">${w.ex?'slides ↓':'soon'}</span>
         ${w.viz.length?`<span class="tag">${w.viz.length} viz</span>`:''}
         ${w.hw?`<span class="tag">PS due</span>`:''}
         <span class="arrow">→</span>
@@ -328,26 +339,43 @@
   document.getElementById('back-weeks').addEventListener('click',()=>show('weeks'));
   document.getElementById('back-viz').addEventListener('click',()=>show('viz'));
 
+  // builds one download-card's markup; falls back gracefully when a file isn't posted yet
+  function dlCard(badge, label, avail, href, dlname, status){
+    const cls = 'dl-card ' + (avail?'avail':'dim');
+    const inner = `
+      <span class="dl-badge">${badge}</span>
+      <span class="dl-label">${label}</span>
+      <div class="dl-name">${avail?dlname:'—'}</div>
+      <div class="dl-status">${status}</div>
+      ${avail?'<span class="dl-arrow">↓</span>':''}`;
+    return avail
+      ? `<a class="${cls}" href="${href}" download="${dlname}">${inner}</a>`
+      : `<div class="${cls}">${inner}</div>`;
+  }
+
   function openWeek(n){
     const w=WEEKS.find(x=>x.n===n);
     const pad=String(w.n).padStart(2,'0');
     document.getElementById('wd-num').textContent='WEEK '+pad;
     document.getElementById('wd-title').textContent=w.t;
     document.getElementById('wd-date').textContent=w.date+', '+YEAR;
-    const hwEl=document.getElementById('wd-hw');
-    if(w.hw){ hwEl.style.display='inline'; hwEl.innerHTML=`<b>${w.hw.t}</b> &nbsp;due ${w.hw.due}`; }
-    else { hwEl.style.display='none'; }
-    // slides download
-    const dl=document.getElementById('wd-dl'), pg=document.getElementById('wd-pages');
-    if(w.pdf){
-      dl.className='btn'; dl.textContent='↓  Download slides (PDF)';
-      dl.href='slides/week-'+pad+'.pdf'; dl.setAttribute('download','CS301-week-'+pad+'.pdf');
-      pg.innerHTML='<b>available</b> &nbsp;PDF';
-    } else {
-      dl.className='btn disabled'; dl.textContent='Slides post on lecture day';
-      dl.removeAttribute('href'); dl.removeAttribute('download');
-      pg.innerHTML='<b>—</b> &nbsp;posts on the day';
-    }
+
+    const dls=document.getElementById('wd-downloads');
+    dls.innerHTML =
+      dlCard('EX','Exercise slides', w.ex,
+        'slides/week-'+pad+'-exercise.pdf', 'CS301-week-'+pad+'-exercise.pdf',
+        w.ex?'available · click to download':'posts on session day') +
+      (w.hw
+        ? dlCard('PS','Problem set', w.hw.ps,
+            'slides/week-'+pad+'-problemset.pdf', 'CS301-week-'+pad+'-problemset.pdf',
+            w.hw.ps?('due '+w.hw.due):('due '+w.hw.due+' · posting soon'))
+        : dlCard('PS','Problem set', false, '', '', 'no problem set this week')) +
+      (w.hw
+        ? dlCard('SOL','Solutions', w.hw.sol,
+            'slides/week-'+pad+'-solutions.pdf', 'CS301-week-'+pad+'-solutions.pdf',
+            w.hw.sol?'available · click to download':'posts after due date')
+        : dlCard('SOL','Solutions', false, '', '', 'no problem set this week'));
+
     const vz=document.getElementById('wd-viz'), vh=document.getElementById('wd-viz-h');
     if(w.viz.length){
       vh.style.display='block';
