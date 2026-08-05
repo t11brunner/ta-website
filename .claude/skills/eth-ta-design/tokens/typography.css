@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{
+  --f-head:'Public Sans', system-ui, sans-serif; /* @kind font */
+  --f-body:'Public Sans', system-ui, sans-serif; /* @kind font */
+  --f-mono:'IBM Plex Mono', monospace; /* @kind font */ /* numeric/data readouts ONLY (percentages, seconds, ζ/ωₙ values, counts). Never labels. */
+
+  /* display / heading scale */
+  --text-display: 56px;
+  --text-h1: 40px;
+  --text-h2: 28px;
+  --text-h3: 20px;
+  --text-h4: 16px;
+
+  /* body scale */
+  --text-body-lg: 16px;
+  --text-body: 15px;
+  --text-body-sm: 14px;
+  --text-caption: 13px;
+
+  /* mono / data-readout scale — percentages, seconds, ζ/ωₙ values, counts. NOT for labels or timestamps. */
+  --text-mono-lg: 13px;
+  --text-mono: 11px;
+  --text-mono-sm: 10px;
+  --text-mono-xs: 9px;
+
+  /* eyebrow / metadata-label scale — dates, "LECTURE ·" tags, week numbers, etc.
+     Public Sans (--f-head), uppercase, 500 weight, +0.06em tracking, color: var(--text-secondary). Never monospace. */
+  --text-eyebrow: 11px;
+  --weight-eyebrow: 500;
+  --tracking-eyebrow: 0.06em;
+
+  --tracking-label: 0.14em;
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.025em;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.15;
+  --leading-normal: 1.4;
+  --leading-relaxed: 1.7;
+}

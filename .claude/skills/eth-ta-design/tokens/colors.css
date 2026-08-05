@@ -1,0 +1,28 @@
+:root{
+  /* base — paper & ink */
+  --paper:#f8f7f3;
+  --paper-2:#f1efe8;
+  --ink:#26261f;
+  --ink-soft:#6a6a60;
+  --mute:#a3a296;
+  --line:#dedcd2;
+  --line-soft:#e9e7df;
+  --card:#fffefb;
+  --hatch: rgba(0,0,0,0.02);
+
+  /* accent — single cool-blue oklch accent, used sparingly */
+  --accent: oklch(0.52 0.09 250);
+  --accent-soft: oklch(0.52 0.09 250 / 0.1);
+  --accent-soft-strong: oklch(0.52 0.09 250 / 0.18);
+
+  /* semantic aliases */
+  --surface-page: var(--paper);
+  --surface-alt: var(--paper-2);
+  --surface-card: var(--card);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--mute);
+  --border-default: var(--line);
+  --border-soft: var(--line-soft);
+  --focus-ring: var(--accent);
+}

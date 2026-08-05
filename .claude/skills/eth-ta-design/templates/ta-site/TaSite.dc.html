@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="ETH TA Site" description="Click-through TA course site: weekly material, downloads, and interactive visualisations" -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--paper);padding:0 24px 100px;font-family:var(--f-body)">
+<div style="max-width:760px;margin:0 auto;padding:100px 0 0;text-align:center">
+<h1 style="font-family:var(--f-head);font-weight:700;font-size:56px;line-height:1.05;margin:0;letter-spacing:-0.02em">Control Systems&nbsp;I</h1>
+<div style="font-family:var(--f-mono);font-size:11px;color:var(--mute);letter-spacing:.08em;margin-top:14px">tibrunner@ethz.ch</div>
+</div>
+<div style="margin:44px auto 56px">
+<x-import component-from-global-scope="{{ns}}.NavPills" items="{{navItems}}" active="{{activeNav}}" onChange="{{onNavChange}}" hint-size="700px,60px">Nav</x-import>
+</div>
+<sc-if value="{{isWeeks}}" hint-placeholder-val="{{true}}">
+<div style="max-width:760px;margin:0 auto">
+<x-import component-from-global-scope="{{ns}}.SectionHeader" title="Weekly material" hint-size="700px,60px">SectionHeader</x-import>
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="10">
+<x-import component-from-global-scope="{{ns}}.Row" number="{{w.pad}}" title="{{w.t}}" meta="{{w.metaText}}" onClick="{{w.open}}" hint-size="700px,80px">Row</x-import>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{isWeek}}" hint-placeholder-val="{{false}}">
+<div style="max-width:760px;margin:0 auto">
+<div onClick="{{backToWeeks}}" style="font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);cursor:pointer;display:inline-flex;gap:7px;margin-bottom:28px">← all weeks</div>
+<div style="font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">{{weekNumLabel}}</div>
+<h2 style="font-family:var(--f-head);font-weight:700;font-size:40px;margin:14px 0 22px;letter-spacing:-0.025em">{{weekTitle}}</h2>
+<div style="display:flex;gap:26px;font-size:13px;color:var(--mute);padding-bottom:22px;border-bottom:1px solid var(--line-soft)">
+<span><b style="color:var(--ink);font-weight:500">{{weekDateLabel}}</b> exercise session</span>
+</div>
+<div style="font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:44px 0 16px">Downloads</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0 8px">
+<x-import component-from-global-scope="{{ns}}.ActionCard" badge="EX" label="Exercise slides" name="{{weekExName}}" status="{{weekExStatus}}" available="{{weekExAvail}}" href="{{weekExHref}}" hint-size="220px,180px">ActionCard</x-import>
+<x-import component-from-global-scope="{{ns}}.ActionCard" badge="PS" label="Problem set" name="{{weekPsName}}" status="{{weekPsStatus}}" available="{{weekPsAvail}}" href="{{weekPsHref}}" hint-size="220px,180px">ActionCard</x-import>
+<x-import component-from-global-scope="{{ns}}.ActionCard" badge="SOL" label="Solutions" name="{{weekSolName}}" status="{{weekSolStatus}}" available="{{weekSolAvail}}" href="{{weekSolHref}}" hint-size="220px,180px">ActionCard</x-import>
+</div>
+<sc-if value="{{weekHasViz}}" hint-placeholder-val="{{false}}">
+<div style="font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:44px 0 16px">Visualisations for this week</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+<sc-for list="{{weekViz}}" as="v" hint-placeholder-count="2">
+<div onClick="{{v.open}}" style="cursor:pointer">
+<x-import component-from-global-scope="{{ns}}.PlaceholderMedia" label="{{v.label}}" height="130" hint-size="200px,130px">PlaceholderMedia</x-import>
+<div style="font-family:var(--f-head);font-weight:600;font-size:16px;letter-spacing:-0.01em;margin-top:12px">{{v.title}}</div>
+<div style="font-family:var(--f-mono);font-size:9px;color:var(--mute);margin-top:5px">{{v.statusLabel}}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{isViz}}" hint-placeholder-val="{{false}}">
+<div style="max-width:980px;margin:0 auto">
+<x-import component-from-global-scope="{{ns}}.SectionHeader" title="Visualisations" note="Interactive demos that accompany the lectures, grouped by topic." hint-size="900px,90px">SectionHeader</x-import>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+<sc-for list="{{allViz}}" as="v" hint-placeholder-count="6">
+<div onClick="{{v.open}}" style="cursor:pointer">
+<x-import component-from-global-scope="{{ns}}.PlaceholderMedia" label="{{v.label}}" height="130" hint-size="280px,130px">PlaceholderMedia</x-import>
+<div style="font-family:var(--f-head);font-weight:600;font-size:16px;letter-spacing:-0.01em;margin-top:12px">{{v.title}}</div>
+<div style="font-family:var(--f-mono);font-size:9px;color:var(--mute);margin-top:5px">{{v.weekMeta}}</div>
+<sc-if value="{{v.live}}" hint-placeholder-val="{{false}}"><div style="font-family:var(--f-mono);font-size:9px;margin-top:6px;color:var(--accent)">{{v.statusLabel}}</div></sc-if><sc-if value="{{v.soon}}" hint-placeholder-val="{{true}}"><div style="font-family:var(--f-mono);font-size:9px;margin-top:6px;color:var(--mute)">{{v.statusLabel}}</div></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{isVizDetail}}" hint-placeholder-val="{{false}}">
+<div style="max-width:980px;margin:0 auto">
+<div onClick="{{backToViz}}" style="font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);cursor:pointer;margin-bottom:28px">← all visualisations</div>
+<div style="font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)">{{vizDetailEyebrow}}</div>
+<h2 style="font-family:var(--f-head);font-weight:600;font-size:28px;margin:12px 0 14px;letter-spacing:-0.02em">{{vizDetailTitle}}</h2>
+<sc-if value="{{vizDetailLive}}" hint-placeholder-val="{{false}}">
+<div>{{stepResponseDemo}}</div>
+</sc-if>
+<sc-if value="{{vizDetailSoon}}" hint-placeholder-val="{{true}}">
+<x-import component-from-global-scope="{{ns}}.PlaceholderMedia" label="visualisation in development — coming during the semester" height="280" hint-size="900px,280px">PlaceholderMedia</x-import>
+<p style="color:var(--ink-soft);font-size:15px;line-height:1.7;margin-top:22px;max-width:52ch">This demo will be built using the same interactive template as the second-order step response.</p>
+</sc-if>
+</div>
+</sc-if>
+<div style="max-width:760px;margin:100px auto 0;font-family:var(--f-mono);font-size:10px;color:var(--mute);border-top:1px solid var(--line);padding-top:22px;letter-spacing:.14em">CONTROL SYSTEMS I · TA SITE · FS26</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const NS = 'ETHTADesignSystem_b75858';
+const YEAR = 2026;
+const WEEKS = [
+  {n:1, t:"Introduction & System Modeling", date:"Aug 31", ex:false, viz:[], hw:{due:"Sep 11", ps:false, sol:false}},
+  {n:2, t:"Laplace Transforms Review", date:"Sep 7", ex:false, viz:[{k:"laplace", label:"Laplace pole map"}]},
+  {n:3, t:"Transfer Functions", date:"Sep 14", ex:false, viz:[{k:"tfbuild", label:"Transfer-function builder"}], hw:{due:"Sep 25", ps:false, sol:false}},
+  {n:4, t:"Block Diagrams & Signal Flow", date:"Sep 21", ex:false, viz:[{k:"block", label:"Block-diagram reduction"}]},
+  {n:5, t:"Time-Domain Response", date:"Sep 28", ex:true, viz:[{k:"step2", label:"Second-order step response", live:true},{k:"impulse", label:"Step vs impulse"}], hw:{due:"Oct 2", ps:true, sol:false}},
+  {n:6, t:"Stability & Routh–Hurwitz", date:"Oct 5", ex:false, viz:[{k:"routh", label:"Routh array explorer"}]},
+  {n:7, t:"Root Locus", date:"Oct 12", ex:false, viz:[{k:"rlocus", label:"Root-locus plot"},{k:"poledrag", label:"Pole / zero drag"}], hw:{due:"Oct 16", ps:false, sol:false}},
+  {n:8, t:"Frequency Response & Bode", date:"Oct 19", ex:false, viz:[{k:"bode", label:"Bode plot"}], hw:{due:"Oct 30", ps:false, sol:false}},
+  {n:9, t:"Nyquist Criterion", date:"Oct 26", ex:false, viz:[]},
+  {n:10, t:"PID Controller Design", date:"Nov 2", ex:false, viz:[{k:"pid", label:"PID tuner"}]},
+];
+
+function simulate(zeta, wn) {
+  const dt = 0.004;
+  const T = Math.min(45, Math.max(6, 9 / (zeta * wn + 0.25)));
+  const n = Math.ceil(T / dt);
+  let x1 = 0, x2 = 0; const ts = new Array(n + 1), ys = new Array(n + 1);
+  const f = (a, b) => [b, wn * wn * (1 - a) - 2 * zeta * wn * b];
+  for (let i = 0; i <= n; i++) {
+    ts[i] = i * dt; ys[i] = x1;
+    const k1 = f(x1, x2);
+    const k2 = f(x1 + dt / 2 * k1[0], x2 + dt / 2 * k1[1]);
+    const k3 = f(x1 + dt / 2 * k2[0], x2 + dt / 2 * k2[1]);
+    const k4 = f(x1 + dt * k3[0], x2 + dt * k3[1]);
+    x1 += dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
+    x2 += dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+  }
+  return { ts, ys, T };
+}
+function metrics(sim) {
+  const { ts, ys } = sim;
+  let peak = -Infinity, tp = 0;
+  for (let i = 0; i < ys.length; i++) if (ys[i] > peak) { peak = ys[i]; tp = ts[i]; }
+  const os = peak > 1 ? (peak - 1) * 100 : 0;
+  let ts2 = ts[ts.length - 1];
+  for (let i = ys.length - 1; i >= 0; i--) { if (Math.abs(ys[i] - 1) > 0.02) { ts2 = ts[Math.min(i + 1, ts.length - 1)]; break; } if (i === 0) ts2 = 0; }
+  let t10 = null, t90 = null;
+  for (let i = 0; i < ys.length; i++) { if (t10 === null && ys[i] >= 0.1) t10 = ts[i]; if (t90 === null && ys[i] >= 0.9) { t90 = ts[i]; break; } }
+  const tr = (t10 !== null && t90 !== null) ? (t90 - t10) : null;
+  return { os, tp, ts2, tr, peak };
+}
+function sizeCanvas(cv) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.getAttribute('height') * 1;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { w, h, ctx };
+}
+function fmt(v, suf) { return v === null || !isFinite(v) ? '—' : v.toFixed(v < 10 ? 2 : 1) + (suf || ''); }
+
+function StepResponseDemo() {
+  const cvStepRef = React.useRef(null), cvSRef = React.useRef(null);
+  const [zeta, setZeta] = React.useState(0.5), [wn, setWn] = React.useState(2);
+  const [readouts, setReadouts] = React.useState({ os: 0, tp: null, tr: null, ts2: 0 });
+
+  function draw() {
+    const cvStep = cvStepRef.current, cvS = cvSRef.current;
+    if (!cvStep || !cvS) return;
+    const stepGeom = sizeCanvas(cvStep), splaneGeom = sizeCanvas(cvS);
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || 'oklch(0.52 0.09 250)';
+    const sim = simulate(zeta, wn); const m = metrics(sim);
+    { const w = stepGeom.w, h = stepGeom.h, ctx = stepGeom.ctx;
+      ctx.clearRect(0, 0, w, h);
+      const padL = 42, padR = 14, padT = 16, padB = 28, pw = w - padL - padR, ph = h - padT - padB;
+      const ts = sim.ts, ys = sim.ys, T = sim.T;
+      let ymax = 1; for (const y of ys) if (y > ymax) ymax = y;
+      ymax = Math.max(1.08, ymax * 1.08);
+      const X = t => padL + (t / T) * pw, Y = y => padT + ph - (y / ymax) * ph;
+      ctx.fillStyle = 'color-mix(in srgb,' + accent + ' 10%, transparent)';
+      ctx.fillRect(padL, Y(1.02), pw, Y(0.98) - Y(1.02));
+      ctx.strokeStyle = '#e9e7df'; ctx.lineWidth = 1; ctx.fillStyle = '#a3a296';
+      ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      [0, 0.5, 1, 1.5, 2].filter(v => v <= ymax + 0.001).forEach(v => { const yy = Y(v); ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(w - padR, yy); ctx.stroke(); ctx.fillText(v.toFixed(1), padL - 7, yy); });
+      ctx.strokeStyle = '#a3a296'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(padL, Y(1)); ctx.lineTo(w - padR, Y(1)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      const xstep = T <= 8 ? 2 : T <= 20 ? 5 : 10;
+      for (let t = 0; t <= T + 0.001; t += xstep) { const xx = X(t); ctx.strokeStyle = '#efeee6'; ctx.beginPath(); ctx.moveTo(xx, padT); ctx.lineTo(xx, padT + ph); ctx.stroke(); ctx.fillStyle = '#a3a296'; ctx.fillText(t + 's', xx, padT + ph + 6); }
+      ctx.strokeStyle = accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      for (let i = 0; i < ys.length; i++) { const xx = X(ts[i]), yy = Y(ys[i]); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); }
+      ctx.stroke();
+      if (m.peak > 1.001) { const px = X(m.tp), py = Y(m.peak); ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(px, py, 3.5, 0, 7); ctx.fill(); }
+    }
+    { const w = splaneGeom.w, h = splaneGeom.h, ctx = splaneGeom.ctx;
+      ctx.clearRect(0, 0, w, h);
+      const cx = w * 0.74, cy = h / 2;
+      const mag = (zeta + Math.sqrt(Math.max(zeta * zeta - 1, 0))) * wn;
+      const range = Math.max(mag * 1.2, wn * 1.25, 1);
+      const sx = v => cx + (v / range) * (w * 0.66), sy = v => cy - (v / range) * (h * 0.42);
+      ctx.strokeStyle = '#dedcd2'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
+      ctx.fillStyle = '#a3a296'; ctx.font = '9px JetBrains Mono, monospace';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('Re', w - 4, cy + 4);
+      ctx.textAlign = 'left'; ctx.fillText('Im', cx + 4, 3);
+      const sigma = -zeta * wn; let poles;
+      if (zeta < 1) { const wd = wn * Math.sqrt(1 - zeta * zeta); poles = [[sigma, wd], [sigma, -wd]]; }
+      else { const d = wn * Math.sqrt(zeta * zeta - 1); poles = [[sigma + d, 0], [sigma - d, 0]]; }
+      ctx.strokeStyle = accent; ctx.lineWidth = 2.2;
+      poles.forEach(p => { const x = sx(p[0]), y = sy(p[1]), r = 5; ctx.beginPath(); ctx.moveTo(x - r, y - r); ctx.lineTo(x + r, y + r); ctx.moveTo(x + r, y - r); ctx.lineTo(x - r, y + r); ctx.stroke(); });
+    }
+    return m;
+  }
+  React.useEffect(() => { const m = draw(); if (m) setReadouts(m); }, [zeta, wn]);
+  React.useEffect(() => {
+    const onResize = () => { const m = draw(); if (m) setReadouts(m); };
+    window.addEventListener('resize', onResize); onResize();
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  let regimeText;
+  if (zeta < 0.001) regimeText = 'undamped — poles on the imaginary axis, sustained oscillation';
+  else if (zeta < 1) regimeText = 'under-damped — complex poles, oscillatory response';
+  else if (Math.abs(zeta - 1) < 0.02) regimeText = 'critically damped — repeated real pole, fastest with no overshoot';
+  else regimeText = 'over-damped — two real poles, sluggish, no overshoot';
+
+  const h = React.createElement;
+  return h('div', null,
+    h('p', { style: { color: 'var(--ink-soft)', fontSize: 15, lineHeight: 1.7, marginBottom: 24, maxWidth: '70ch' } },
+      'Every second-order system G(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²) is characterised by its damping ratio ζ and natural frequency ωₙ. Drag the sliders to see how the poles move and how the step response changes.'),
+    h('div', { style: { display: 'grid', gridTemplateColumns: '1.7fr 1fr', gap: 40, alignItems: 'start' } },
+      h('div', { style: { border: '1px solid var(--line)', borderRadius: 14, background: 'var(--card)', padding: '16px 18px 8px' } },
+        h('div', { style: { fontFamily: 'var(--f-mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: 6 } }, 'Step response · y(t)'),
+        h('canvas', { ref: cvStepRef, height: '340', style: { display: 'block', width: '100%' } })),
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: 26 } },
+        h('div', { style: { border: '1px solid var(--line)', borderRadius: 14, background: 'var(--card)', padding: '14px 16px 8px' } },
+          h('div', { style: { fontFamily: 'var(--f-mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: 6 } }, 'Pole locations · s-plane'),
+          h('canvas', { ref: cvSRef, height: '190', style: { display: 'block', width: '100%' } })),
+        h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '22px 26px' } },
+          [['Overshoot', readouts.os < 0.05 ? '0%' : readouts.os.toFixed(1) + '%'], ['Peak time', readouts.os < 0.05 ? '—' : fmt(readouts.tp) + 's'], ['Rise time 10–90%', readouts.tr === null ? '—' : fmt(readouts.tr) + 's'], ['Settling 2%', fmt(readouts.ts2) + 's']].map(pair =>
+            h('div', { key: pair[0] },
+              h('div', { style: { fontFamily: 'var(--f-mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)' } }, pair[0]),
+              h('div', { style: { fontFamily: 'var(--f-head)', fontWeight: 600, fontSize: 26, marginTop: 4, letterSpacing: '-0.01em' } }, pair[1])))))),
+    h('div', { style: { border: '1px solid var(--line)', borderRadius: 14, background: 'var(--card)', padding: '22px 24px', marginTop: 28 } },
+      h('div', { style: { marginBottom: 24 } },
+        h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 } },
+          h('span', { style: { fontWeight: 500, fontSize: 14 } }, 'Damping ratio  ', h('em', { style: { fontFamily: 'var(--f-head)', fontStyle: 'italic', color: 'var(--mute)', fontWeight: 400 } }, 'ζ')),
+          h('span', { style: { fontFamily: 'var(--f-mono)', fontSize: 13, color: 'var(--accent)' } }, zeta.toFixed(2))),
+        h('input', { type: 'range', min: '0', max: '2', step: '0.01', value: zeta, onChange: e => setZeta(parseFloat(e.target.value)), style: { WebkitAppearance: 'none', appearance: 'none', width: '100%', height: 2, background: 'var(--line)', outline: 'none' } }),
+        h('div', { style: { fontFamily: 'var(--f-mono)', fontSize: 11, color: 'var(--mute)', marginTop: 12 } }, 'Regime: ' + regimeText)),
+      h('div', null,
+        h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 } },
+          h('span', { style: { fontWeight: 500, fontSize: 14 } }, 'Natural frequency  ', h('em', { style: { fontFamily: 'var(--f-head)', fontStyle: 'italic', color: 'var(--mute)', fontWeight: 400 } }, 'ωₙ')),
+          h('span', { style: { fontFamily: 'var(--f-mono)', fontSize: 13, color: 'var(--accent)' } }, wn.toFixed(1) + ' rad/s')),
+        h('input', { type: 'range', min: '0.5', max: '6', step: '0.1', value: wn, onChange: e => setWn(parseFloat(e.target.value)), style: { WebkitAppearance: 'none', appearance: 'none', width: '100%', height: 2, background: 'var(--line)', outline: 'none' } }))),
+    h('div', { style: { fontFamily: 'var(--f-mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)', margin: '44px 0 16px' } }, 'What to notice'),
+    h('div', { style: { fontSize: 16, lineHeight: 1.6 } },
+      h('p', { style: { margin: '0 0 12px', maxWidth: '64ch' } }, 'As ζ drops below 1 the poles become a complex-conjugate pair and the response overshoots and rings. At ζ = 1 (critically damped) the response is the fastest possible with no overshoot. Above ζ = 1 the poles split onto the real axis and the response becomes sluggish.'),
+      h('p', { style: { margin: 0, maxWidth: '64ch' } }, 'ωₙ scales the speed of everything: larger ωₙ pushes the poles further from the origin, shrinking rise and settling times while leaving the overshoot percentage unchanged.')));
+}
+
+class Component extends DCLogic {
+  state = { screen: 'weeks', openWeekN: null, openViz: null };
+
+  openWeek(n) { this.setState({ screen: 'week', openWeekN: n }); }
+  openVizFn(v, w) { this.setState({ screen: 'viz-detail', openViz: { v, w } }); }
+
+  renderVals() {
+    const s = this.state;
+    const weeks = WEEKS.map(w => {
+      const pad = String(w.n).padStart(2, '0');
+      const bits = [w.ex ? 'slides ↓' : 'soon'];
+      if (w.viz.length) bits.push(w.viz.length + ' viz');
+      if (w.hw) bits.push('PS due');
+      return { pad, t: w.t, metaText: 'LECTURE · ' + w.date.toUpperCase() + ', ' + YEAR + ' · ' + bits.join(' · ').toUpperCase(), open: () => this.openWeek(w.n) };
+    });
+    const week = WEEKS.find(w => w.n === s.openWeekN);
+    const allViz = [];
+    WEEKS.forEach(w => w.viz.forEach(v => allViz.push({
+      label: v.label.toLowerCase(), title: v.label, weekMeta: 'WEEK ' + String(w.n).padStart(2, '0') + ' · ' + w.t,
+      statusLabel: v.live ? '● interactive' : '○ in development', live: !!v.live, soon: !v.live,
+      open: () => this.openVizFn(v, w),
+    })));
+    let vd = { eyebrow: '', title: '', live: false, soon: true };
+    let weekFields = {};
+    if (week) {
+      const pad = String(week.n).padStart(2, '0');
+      weekFields = {
+        weekNumLabel: 'WEEK ' + pad, weekTitle: week.t, weekDateLabel: week.date + ', ' + YEAR,
+        weekExName: 'CS301-week-' + pad + '-exercise.pdf', weekExStatus: week.ex ? 'available · click to download' : 'posts on session day', weekExAvail: week.ex, weekExHref: 'slides/week-' + pad + '-exercise.pdf',
+        weekPsName: week.hw ? 'CS301-week-' + pad + '-problemset.pdf' : '', weekPsStatus: week.hw ? (week.hw.ps ? ('due ' + week.hw.due) : ('due ' + week.hw.due + ' · posting soon')) : 'no problem set this week', weekPsAvail: !!(week.hw && week.hw.ps), weekPsHref: 'slides/week-' + pad + '-problemset.pdf',
+        weekSolName: week.hw ? 'CS301-week-' + pad + '-solutions.pdf' : '', weekSolStatus: week.hw ? (week.hw.sol ? 'available · click to download' : 'posts after due date') : 'no problem set this week', weekSolAvail: !!(week.hw && week.hw.sol), weekSolHref: 'slides/week-' + pad + '-solutions.pdf',
+        weekHasViz: week.viz.length > 0,
+        weekViz: week.viz.map(v => ({ label: v.label.toLowerCase(), title: v.label, statusLabel: v.live ? '● interactive' : '○ in development', open: () => this.openVizFn(v, week) })),
+      };
+    }
+    if (s.openViz) {
+      const isLive = s.openViz.v.k === 'step2';
+      vd = { eyebrow: 'WEEK ' + String(s.openViz.w.n).padStart(2, '0') + ' · VISUALISATION', title: s.openViz.v.label, live: isLive, soon: !isLive };
+    }
+    return {
+      ns: NS,
+      navItems: [{ key: 'weeks', label: 'weeks' }, { key: 'viz', label: 'visualisations' }],
+      activeNav: s.screen === 'week' ? 'weeks' : s.screen === 'viz-detail' ? 'viz' : s.screen,
+      onNavChange: (k) => this.setState({ screen: k }),
+      isWeeks: s.screen === 'weeks', isWeek: s.screen === 'week', isViz: s.screen === 'viz', isVizDetail: s.screen === 'viz-detail',
+      weeks,
+      backToWeeks: () => this.setState({ screen: 'weeks' }),
+      backToViz: () => this.setState({ screen: 'viz' }),
+      allViz,
+      vizDetailEyebrow: vd.eyebrow, vizDetailTitle: vd.title, vizDetailLive: vd.live, vizDetailSoon: vd.soon,
+      stepResponseDemo: vd.live ? React.createElement(StepResponseDemo) : null,
+      ...weekFields,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!-- @dsCard group="Components" viewport="700x120" name="Navigation (NavPills)" subtitle="Centered mono nav pills" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="../../_ds_bundle.js"></script>
+<div style="padding:20px;background:var(--surface-page)">
+<div id="root"></div>
+</div>
+<script type="text/babel">
+const { NavPills } = window.ETHTADesignSystem_b75858;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <NavPills items={[{key:'weeks',label:'weeks'},{key:'viz',label:'visualisations'}]} active="weeks" />
+);
+</script>

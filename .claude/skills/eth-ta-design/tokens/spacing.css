@@ -1,0 +1,27 @@
+:root{
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 40px;
+  --space-9: 56px;
+  --space-10: 100px;
+
+  --maxw-content: 760px;
+  --maxw-wide: 980px;
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  --border-w: 1px;
+
+  --ease-standard: ease; /* @kind other */
+  --duration-fast: .14s; /* @kind other */
+  --duration-base: .3s; /* @kind other */
+}
