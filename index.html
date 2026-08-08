@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <style>
   :root{
     --paper:#f8f7f3;
@@ -150,6 +152,30 @@
   .notes p{ margin:0 0 12px; max-width:64ch; }
   .notes .eq{ font-family:var(--f-mono); font-size:13px; background:var(--paper-2); padding:14px 16px; border-radius:8px; display:inline-block; color:var(--ink); margin:4px 0; }
 
+  /* ===== transfer-function magnitude/phase viz ===== */
+  .tf-layout{ display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:start; margin:6px 0 8px; }
+  .tf-card{ border:1px solid var(--line); border-radius:14px; background:var(--card); padding:18px 20px 20px; }
+  .tf-formula{ font-size:17px; color:var(--ink); margin-bottom:8px; overflow-x:auto; }
+  .tf-formula.accent{ color:var(--accent); font-size:16px; margin-bottom:20px; }
+  .tf-formula:last-child{ margin-bottom:0; }
+  .tf-formula .katex-display{ margin:0; }
+  .tf-root-row{ display:flex; align-items:center; gap:10px; padding:8px 0; border-top:1px solid var(--line-soft); flex-wrap:wrap; }
+  .tf-root-tag{ font-family:var(--f-mono); font-size:11px; color:var(--ink); min-width:20px; }
+  .tf-root-tag.pole{ color:var(--accent); }
+  .tf-pair-lbl{ display:flex; align-items:center; gap:4px; font-size:10px; color:var(--mute); font-family:var(--f-mono); letter-spacing:.04em; cursor:pointer; }
+  .tf-pair-lbl input{ margin:0; }
+  .tf-numfield{ display:flex; align-items:center; gap:4px; }
+  .tf-numfield-lbl{ font-family:var(--f-mono); font-size:10px; color:var(--mute); }
+  .tf-numfield-input{ width:56px; font-family:var(--f-mono); font-size:12px; border:1px solid var(--line); border-radius:6px; padding:3px 5px; background:var(--paper); color:var(--ink); }
+  .tf-numfield-input:focus{ outline:none; border-color:var(--accent); }
+  .tf-rm-btn{ margin-left:auto; border:1px solid var(--line); background:var(--card); border-radius:999px; width:22px; height:22px; cursor:pointer; color:var(--mute); font-size:12px; line-height:1; }
+  .tf-rm-btn:hover{ color:var(--accent); border-color:var(--accent); }
+  .tf-add-btn{ margin-top:10px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 12px; font-family:var(--f-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); cursor:pointer; }
+  .tf-add-btn.accent{ color:var(--accent); }
+  .tf-add-btn:disabled{ color:var(--line); cursor:default; }
+  .tf-vec-row{ display:flex; justify-content:space-between; font-size:12px; font-family:var(--f-mono); color:var(--ink); padding:2px 0; }
+  .tf-vec-row.pole{ color:var(--accent); }
+
   footer.sitefoot{ max-width:var(--maxw); margin:100px auto 0; font-family:var(--f-mono); font-size:10px; color:var(--mute); border-top:1px solid var(--line); padding-top:22px; letter-spacing:.14em; }
 
   @media(max-width:760px){
@@ -159,6 +185,7 @@
     .gal{ grid-template-columns:1fr 1fr; gap:20px; }
     .dl-grid{ grid-template-columns:1fr; }
     .viz-detail .vlayout{ grid-template-columns:1fr; gap:26px; }
+    .tf-layout{ grid-template-columns:1fr; gap:26px; }
   }
   @media(max-width:520px){
     .gal{ grid-template-columns:1fr; }
@@ -190,12 +217,12 @@
     <section class="screen" id="s-week">
       <div class="wrap">
         <div class="back" id="back-weeks">← all weeks</div>
-        <div class="wd-eyebrow" id="wd-num">WEEK 05</div>
+        <div class="wd-eyebrow" id="wd-num">WEEK 08</div>
         <div class="wd-head">
-          <h2 id="wd-title">Time-Domain Response</h2>
+          <h2 id="wd-title">Time-Domain Specifications</h2>
         </div>
         <div class="wd-meta">
-          <span><b id="wd-date">Sep 28, 2026</b> &nbsp;exercise session</span>
+          <span><b id="wd-date">Oct 19, 2026</b> &nbsp;exercise session</span>
         </div>
 
         <div class="subhead">Downloads</div>
@@ -224,7 +251,7 @@
     <section class="screen viz-detail" id="s-viz-detail">
       <div class="wide">
         <div class="back" id="back-viz">← all visualisations</div>
-        <div class="wd-eyebrow" id="vd-eyebrow">WEEK 05 · VISUALISATION</div>
+        <div class="wd-eyebrow" id="vd-eyebrow">WEEK 08 · VISUALISATION</div>
         <h2 class="sec-title" id="vd-title" style="margin-bottom:14px;">Second-order step response</h2>
         <div id="vd-live">
           <p class="sec-note" style="margin-bottom:24px;">Every second-order system <span class="notes"><span class="eq" style="padding:3px 8px;">G(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)</span></span> is characterised by its damping ratio ζ and natural frequency ωₙ. Drag the sliders to see how the poles move and how the step response changes.</p>
@@ -263,6 +290,53 @@
             <p>ωₙ scales the speed of everything: larger ωₙ pushes the poles further from the origin, shrinking rise and settling times while leaving the overshoot percentage unchanged.</p>
           </div>
         </div>
+        <div id="vd-tf" style="display:none;">
+          <p class="sec-note" style="margin-bottom:24px; max-width:72ch;">G(s) is built from zeros and poles: <span class="notes"><span class="eq" style="padding:3px 8px;">G(s) = K·Π(s−zᵢ)/Π(s−pⱼ)</span></span> Evaluating G at s&nbsp;=&nbsp;jω means measuring, from every zero and pole to the point jω on the imaginary axis, a vector — its length and angle. Multiply the zero lengths, divide by the pole lengths, and you get |G(jω)|, the factor by which a sine wave of frequency ω is scaled. Add the zero angles, subtract the pole angles, and you get ∠G(jω), the phase shift applied to that same wave.</p>
+          <div class="tf-layout">
+            <div class="plot-wrap">
+              <div class="plot-title">s-plane &nbsp;·&nbsp; vectors to jω</div>
+              <canvas id="cv-tf-splane" height="280"></canvas>
+              <div class="ctrl" style="margin:14px 0 0; padding-top:14px; border-top:1px solid var(--line-soft);">
+                <div class="clabel"><span class="cname">Frequency &nbsp;<em>ω</em></span><span class="cval" id="tf-omega-val">1.30 rad/s</span></div>
+                <input type="range" id="tf-omega-slider" min="0.1" max="8" step="0.02" value="1.3" />
+              </div>
+            </div>
+            <div class="side-col">
+              <div class="tf-card">
+                <div class="plot-title">formulas</div>
+                <div class="tf-formula" id="tf-f-mag-sym"></div>
+                <div class="tf-formula accent" id="tf-f-mag-val"></div>
+                <div class="tf-formula" id="tf-f-phase-sym"></div>
+                <div class="tf-formula accent" id="tf-f-phase-val"></div>
+              </div>
+              <div class="readouts">
+                <div class="ro"><div class="rk">|G(jω)|</div><div class="rv" id="tf-ro-mag">—</div></div>
+                <div class="ro"><div class="rk">∠G(jω)</div><div class="rv" id="tf-ro-phase">—</div></div>
+                <div class="ro"><div class="rk">Frequency ω</div><div class="rv" id="tf-ro-omega" style="font-size:22px;">—</div></div>
+                <div class="ro"><div class="rk">Output vs input</div><div class="rv" id="tf-ro-dir" style="font-size:22px;">—</div></div>
+              </div>
+              <div class="tf-card">
+                <div class="plot-title" style="margin-bottom:2px;">zeros</div>
+                <div id="tf-zeros-list"></div>
+                <button type="button" class="tf-add-btn" id="tf-add-zero">+ zero</button>
+                <div class="plot-title" style="margin:18px 0 2px;">poles</div>
+                <div id="tf-poles-list"></div>
+                <button type="button" class="tf-add-btn accent" id="tf-add-pole">+ pole</button>
+                <div class="plot-title" style="margin:18px 0 6px;">per-root vectors</div>
+                <div id="tf-vectors-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="plot-wrap" style="margin-top:28px;">
+            <div class="plot-title">input vs. output &nbsp;·&nbsp; y(t)</div>
+            <canvas id="cv-tf-time" height="220"></canvas>
+          </div>
+          <div class="subhead">What to notice</div>
+          <div class="notes">
+            <p>Raise ω with the slider: the pole vectors lengthen faster than the zero vectors, so |G(jω)| falls off. Move a pole's Re/Im close to jω and its vector shrinks — that term dominates the magnitude and its angle dominates the phase.</p>
+            <p>A complex-conjugate pair of poles or zeros always contributes two vectors, one from each partner — together they set both the magnitude and the phase, which is why complex poles bend a response in ways a single real pole cannot.</p>
+          </div>
+        </div>
         <div id="vd-soon" style="display:none;">
           <div class="ph" style="height:280px;">visualisation in development — coming during the semester</div>
           <p class="sec-note" style="margin-top:22px;">This demo will be built using the same interactive template as the second-order step response. Check back when the relevant week goes live.</p>
@@ -270,7 +344,7 @@
       </div>
     </section>
 
-    <footer class="sitefoot">CONTROL SYSTEMS I · TA SITE · FS26 · HOSTED ON GITHUB PAGES</footer>
+    <footer class="sitefoot">CONTROL SYSTEMS I · TA SITE · HS26 · HOSTED ON GITHUB PAGES</footer>
   </div>
 
 <script>
@@ -288,16 +362,19 @@
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
-    {n:1,  t:"Introduction & System Modeling", date:"Aug 31", ex:false, viz:[], hw:{t:"Problem Set 1 — Modeling", due:"Sep 11", ps:false, sol:false}},
-    {n:2,  t:"Laplace Transforms Review",      date:"Sep 7",  ex:false, viz:[{k:"laplace", label:"Laplace pole map"}]},
-    {n:3,  t:"Transfer Functions",             date:"Sep 14", ex:false, viz:[{k:"tfbuild", label:"Transfer-function builder"}], hw:{t:"Problem Set 2 — Transfer Functions", due:"Sep 25", ps:false, sol:false}},
-    {n:4,  t:"Block Diagrams & Signal Flow",   date:"Sep 21", ex:false, viz:[{k:"block", label:"Block-diagram reduction"}]},
-    {n:5,  t:"Time-Domain Response",           date:"Sep 28", ex:false, viz:[{k:"step2", label:"Second-order step response", live:true},{k:"impulse", label:"Step vs impulse"}], hw:{t:"Problem Set 3 — Time Response", due:"Oct 2", ps:false, sol:false}},
-    {n:6,  t:"Stability & Routh–Hurwitz",      date:"Oct 5",  ex:false, viz:[{k:"routh", label:"Routh array explorer"}]},
-    {n:7,  t:"Root Locus",                     date:"Oct 12", ex:false, viz:[{k:"rlocus", label:"Root-locus plot"},{k:"poledrag", label:"Pole / zero drag"}], hw:{t:"Problem Set 4 — Root Locus", due:"Oct 16", ps:false, sol:false}},
-    {n:8,  t:"Frequency Response & Bode",      date:"Oct 19", ex:false, viz:[{k:"bode", label:"Bode plot"}], hw:{t:"Problem Set 5 — Frequency Domain", due:"Oct 30", ps:false, sol:false}},
-    {n:9,  t:"Nyquist Criterion",              date:"Oct 26", ex:false, viz:[]},
-    {n:10, t:"PID Controller Design",          date:"Nov 2",  ex:false, viz:[{k:"pid", label:"PID tuner"}]},
+    {n:1,  t:"Introduction & Orientation",         date:"Aug 31", ex:false, viz:[]},
+    {n:2,  t:"Modeling",                           date:"Sep 7",  ex:false, viz:[]},
+    {n:3,  t:"Linearization",                      date:"Sep 14", ex:false, viz:[]},
+    {n:4,  t:"Time Response",                      date:"Sep 21", ex:false, viz:[{k:"impulse", label:"Step vs impulse response"}]},
+    {n:5,  t:"Transfer Functions",                 date:"Sep 28", ex:false, viz:[{k:"tfbuild", label:"Transfer-function builder"},{k:"tfgeom", label:"Transfer function: magnitude & phase", live:true}]},
+    {n:6,  t:"Poles & Zeros",                      date:"Oct 5",  ex:false, viz:[{k:"poledrag", label:"Pole / zero drag"}]},
+    {n:7,  t:"Feedback & Root Locus",              date:"Oct 12", ex:false, viz:[{k:"rlocus", label:"Root-locus plot"}]},
+    {n:8,  t:"Time-Domain Specifications",         date:"Oct 19", ex:false, viz:[{k:"step2", label:"Second-order step response", live:true}]},
+    {n:9,  t:"Frequency Response",                 date:"Oct 26", ex:false, viz:[{k:"bode", label:"Bode plot"}]},
+    {n:10, t:"Nyquist Criterion",                  date:"Nov 2",  ex:false, viz:[{k:"nyquist", label:"Nyquist plot"}]},
+    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 9",  ex:false, viz:[{k:"freqspecs", label:"Bandwidth & phase margin"}]},
+    {n:12, t:"Time Delays",                        date:"Nov 16", ex:false, viz:[{k:"delay", label:"Time-delay approximation"}]},
+    {n:13, t:"Nonlinearities",                     date:"Nov 23", ex:false, viz:[{k:"nonlin", label:"Nonlinearity explorer"}]},
   ];
 
   // ---- weeks list ----
@@ -394,11 +471,14 @@
   function openViz(v,w){
     document.getElementById('vd-eyebrow').textContent='WEEK '+String(w.n).padStart(2,'0')+' · VISUALISATION';
     document.getElementById('vd-title').textContent=v.label;
-    const isLive = v.k==='step2';
-    document.getElementById('vd-live').style.display = isLive?'block':'none';
-    document.getElementById('vd-soon').style.display = isLive?'none':'block';
+    const isStep = v.k==='step2';
+    const isTF = v.k==='tfgeom';
+    document.getElementById('vd-live').style.display = isStep?'block':'none';
+    document.getElementById('vd-tf').style.display = isTF?'block':'none';
+    document.getElementById('vd-soon').style.display = (isStep||isTF)?'none':'block';
     showScreen('s-viz-detail'); setNav('viz');
-    if(isLive){ requestAnimationFrame(()=>{ sizeCanvases(); render(); }); }
+    if(isStep){ requestAnimationFrame(()=>{ sizeCanvases(); render(); }); }
+    if(isTF){ requestAnimationFrame(()=>{ tfSizeCanvases(); tfUpdateAll(); }); }
   }
 
   // ===================== interactive: 2nd-order step response =====================
@@ -406,15 +486,18 @@
   const cvS=document.getElementById('cv-splane');
   const sZeta=document.getElementById('s-zeta'), sWn=document.getElementById('s-wn');
 
-  function sizeCanvas(cv){
+  // cssH is passed explicitly (not read back from the canvas) so repeated
+  // resizes can't compound the backing-bitmap size on high-DPI displays.
+  function sizeCanvas(cv, cssH){
     const dpr=window.devicePixelRatio||1;
-    const w=cv.clientWidth, h=cv.getAttribute('height')*1;
-    cv.width=w*dpr; cv.height=h*dpr;
+    const w=cv.clientWidth, h=cssH;
+    cv.style.height=h+'px';
+    cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
     const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
     return {w,h,ctx};
   }
   let stepGeom, splaneGeom;
-  function sizeCanvases(){ stepGeom=sizeCanvas(cvStep); splaneGeom=sizeCanvas(cvS); }
+  function sizeCanvases(){ stepGeom=sizeCanvas(cvStep,340); splaneGeom=sizeCanvas(cvS,190); }
 
   function simulate(zeta, wn){
     const dt=0.004;
@@ -528,7 +611,234 @@
   }
   sZeta.addEventListener('input',render);
   sWn.addEventListener('input',render);
-  window.addEventListener('resize',()=>{ if(document.getElementById('s-viz-detail').classList.contains('show')){ sizeCanvases(); render(); } });
+  window.addEventListener('resize',()=>{
+    if(!document.getElementById('s-viz-detail').classList.contains('show')) return;
+    if(document.getElementById('vd-live').style.display!=='none'){ sizeCanvases(); render(); }
+    if(document.getElementById('vd-tf').style.display!=='none'){ tfSizeCanvases(); tfUpdateAll(); }
+  });
+
+  // ===================== interactive: transfer function magnitude & phase =====================
+  let tfZeros=[{id:1, re:-2.6, im:0, complex:false}];
+  let tfPoles=[{id:2, re:-1.0, im:1.8, complex:true}];
+  let tfOmega=1.3;
+  let tfIdSeq=3;
+
+  function tfCompute(zeros, poles, omega){
+    function expand(list, prefix){
+      const insts=[];
+      list.forEach((r,i)=>{
+        if(r.complex){ insts.push({re:r.re, im:r.im, label:prefix+(i+1)}); insts.push({re:r.re, im:-r.im, label:prefix+(i+1)+'*'}); }
+        else insts.push({re:r.re, im:0, label:prefix+(i+1)});
+      });
+      return insts;
+    }
+    function withVec(inst){
+      const vre=0-inst.re, vim=omega-inst.im;
+      return Object.assign({}, inst, {mag:Math.hypot(vre,vim), ang:Math.atan2(vim,vre)});
+    }
+    const zVecs=expand(zeros,'z').map(withVec), pVecs=expand(poles,'p').map(withVec);
+    let numMag=1, numAng=0; zVecs.forEach(v=>{ numMag*=v.mag; numAng+=v.ang; });
+    let denMag=1, denAng=0; pVecs.forEach(v=>{ denMag*=v.mag; denAng+=v.ang; });
+    return {zVecs, pVecs, magnitude:numMag/denMag, phase:numAng-denAng};
+  }
+
+  function tfMakeNumberField(labelText, value, onCommit){
+    const wrap=document.createElement('div'); wrap.className='tf-numfield';
+    const lbl=document.createElement('span'); lbl.className='tf-numfield-lbl'; lbl.textContent=labelText;
+    const inp=document.createElement('input');
+    inp.type='text'; inp.inputMode='decimal'; inp.className='tf-numfield-input'; inp.value=String(value);
+    let lastValid=value;
+    // buffer raw typed text locally; only commit once it parses to a number,
+    // so a lone "-" or "." while typing doesn't get snapped back to 0
+    inp.addEventListener('input',()=>{
+      const raw=inp.value;
+      if(raw===''||raw==='-'||raw==='.'||raw==='-.') return;
+      const v=parseFloat(raw);
+      if(!isNaN(v)){ lastValid=v; onCommit(v); }
+    });
+    inp.addEventListener('blur',()=>{
+      const raw=inp.value;
+      if(raw===''||raw==='-'||raw==='.'||raw==='-.'||isNaN(parseFloat(raw))) inp.value=String(lastValid);
+    });
+    wrap.appendChild(lbl); wrap.appendChild(inp);
+    return wrap;
+  }
+
+  function tfBuildRootRow(kind, root, idx){
+    const row=document.createElement('div'); row.className='tf-root-row';
+    const tag=document.createElement('span'); tag.className='tf-root-tag'+(kind==='pole'?' pole':'');
+    tag.textContent=(kind==='zero'?'z':'p')+(idx+1);
+    row.appendChild(tag);
+
+    const pairLbl=document.createElement('label'); pairLbl.className='tf-pair-lbl';
+    const pairCb=document.createElement('input'); pairCb.type='checkbox'; pairCb.checked=root.complex;
+    pairCb.addEventListener('change',()=>{
+      root.complex=pairCb.checked;
+      root.im = root.complex ? (root.im || 1.5) : 0;
+      tfRenderRoots(); tfUpdateAll();
+    });
+    pairLbl.appendChild(pairCb); pairLbl.appendChild(document.createTextNode('pair'));
+    row.appendChild(pairLbl);
+
+    row.appendChild(tfMakeNumberField('Re', root.re, v=>{ root.re=v; tfUpdateAll(); }));
+    if(root.complex){
+      row.appendChild(tfMakeNumberField('Im', root.im, v=>{ root.im=Math.max(0.05, Math.abs(v)); tfUpdateAll(); }));
+    }
+
+    const rmBtn=document.createElement('button'); rmBtn.type='button'; rmBtn.className='tf-rm-btn'; rmBtn.textContent='×';
+    rmBtn.addEventListener('click',()=>{
+      const list = kind==='zero' ? tfZeros : tfPoles;
+      if(list.length<=1) return;
+      const i=list.indexOf(root); if(i>=0) list.splice(i,1);
+      tfRenderRoots(); tfUpdateAll();
+    });
+    row.appendChild(rmBtn);
+    return row;
+  }
+
+  function tfRenderRoots(){
+    const zList=document.getElementById('tf-zeros-list'), pList=document.getElementById('tf-poles-list');
+    zList.innerHTML=''; tfZeros.forEach((r,i)=>zList.appendChild(tfBuildRootRow('zero',r,i)));
+    pList.innerHTML=''; tfPoles.forEach((r,i)=>pList.appendChild(tfBuildRootRow('pole',r,i)));
+    document.getElementById('tf-add-zero').disabled = tfZeros.length>=4;
+    document.getElementById('tf-add-pole').disabled = tfPoles.length>=4;
+  }
+
+  document.getElementById('tf-add-zero').addEventListener('click',()=>{
+    if(tfZeros.length>=4) return;
+    tfZeros.push({id:tfIdSeq++, re:-1, im:0, complex:false});
+    tfRenderRoots(); tfUpdateAll();
+  });
+  document.getElementById('tf-add-pole').addEventListener('click',()=>{
+    if(tfPoles.length>=4) return;
+    tfPoles.push({id:tfIdSeq++, re:-1, im:0, complex:false});
+    tfRenderRoots(); tfUpdateAll();
+  });
+
+  const tfOmegaSlider=document.getElementById('tf-omega-slider');
+  tfOmegaSlider.addEventListener('input',()=>{
+    tfOmega=parseFloat(tfOmegaSlider.value);
+    document.getElementById('tf-omega-val').textContent=tfOmega.toFixed(2)+' rad/s';
+    tfUpdateAll();
+  });
+
+  let tfSplaneGeom, tfTimeGeom;
+  function tfSizeCanvases(){
+    tfSplaneGeom=sizeCanvas(document.getElementById('cv-tf-splane'),280);
+    tfTimeGeom=sizeCanvas(document.getElementById('cv-tf-time'),220);
+  }
+
+  function tfDrawSplane(zVecs, pVecs, omega){
+    const {w,h,ctx}=tfSplaneGeom; if(!w) return;
+    ctx.clearRect(0,0,w,h);
+    const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    const inkSoft=getComputedStyle(document.documentElement).getPropertyValue('--ink-soft').trim();
+    const allPts=zVecs.concat(pVecs,[{re:0, im:omega}]);
+    let maxAbs=1.5; allPts.forEach(p=>{ maxAbs=Math.max(maxAbs, Math.abs(p.re), Math.abs(p.im)); });
+    const range=maxAbs*1.25;
+    const cx=w*0.6, cy=h/2, scX=(w*0.42)/range, scY=(h*0.42)/range;
+    const sx=v=>cx+v*scX, sy=v=>cy-v*scY;
+    ctx.strokeStyle='#dedcd2'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(w,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,h); ctx.stroke();
+    ctx.fillStyle='#a3a296'; ctx.font='9px JetBrains Mono, monospace';
+    ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillText('Re', w-4, cy+4);
+    ctx.textAlign='left'; ctx.fillText('Im', cx+4, 3);
+    function arrow(x1,y1,x2,y2,color,dash){
+      ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.setLineDash(dash?[5,4]:[]);
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.setLineDash([]);
+      const ang=Math.atan2(y2-y1,x2-x1), ah=6;
+      ctx.beginPath(); ctx.moveTo(x2,y2);
+      ctx.lineTo(x2-ah*Math.cos(ang-0.4), y2-ah*Math.sin(ang-0.4));
+      ctx.lineTo(x2-ah*Math.cos(ang+0.4), y2-ah*Math.sin(ang+0.4));
+      ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+    }
+    const jx=sx(0), jy=sy(omega);
+    zVecs.forEach(v=>arrow(sx(v.re),sy(v.im),jx,jy,inkSoft,false));
+    pVecs.forEach(v=>arrow(sx(v.re),sy(v.im),jx,jy,accent,true));
+    zVecs.forEach(v=>{ ctx.beginPath(); ctx.arc(sx(v.re),sy(v.im),5,0,7); ctx.strokeStyle='#26261f'; ctx.lineWidth=1.8; ctx.stroke(); });
+    pVecs.forEach(v=>{ const x=sx(v.re),y=sy(v.im),r=5; ctx.strokeStyle=accent; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y+r); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y+r); ctx.stroke(); });
+    ctx.fillStyle=accent; ctx.beginPath(); ctx.arc(jx,jy,5.5,0,7); ctx.fill();
+    ctx.fillStyle='#26261f'; ctx.font='10px JetBrains Mono, monospace'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+    ctx.fillText('jω', jx+9, jy-5);
+  }
+
+  function tfDrawTime(magnitude, phase, omega){
+    const {w,h,ctx}=tfTimeGeom; if(!w) return;
+    ctx.clearRect(0,0,w,h);
+    const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    const inkSoft=getComputedStyle(document.documentElement).getPropertyValue('--ink-soft').trim();
+    const padL=42,padR=14,padT=16,padB=26, pw=w-padL-padR, ph=h-padT-padB;
+    const T=Math.min(40, Math.max(6, 4*Math.PI/omega));
+    const amp=Math.max(1,magnitude)*1.25;
+    const X=t=>padL+(t/T)*pw, Y=y=>padT+ph/2-(y/amp)*(ph/2);
+    ctx.strokeStyle='#efeee6'; ctx.lineWidth=1; ctx.fillStyle='#a3a296'; ctx.font='10px JetBrains Mono, monospace';
+    ctx.beginPath(); ctx.moveTo(padL,Y(0)); ctx.lineTo(w-padR,Y(0)); ctx.stroke();
+    const n=400;
+    ctx.strokeStyle=inkSoft; ctx.setLineDash([5,4]); ctx.lineWidth=1.8; ctx.beginPath();
+    for(let i=0;i<=n;i++){ const t=(i/n)*T; const y=Math.sin(omega*t); const xx=X(t),yy=Y(y); i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy); }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle=accent; ctx.lineWidth=2.4; ctx.beginPath();
+    for(let i=0;i<=n;i++){ const t=(i/n)*T; const y=magnitude*Math.sin(omega*t+phase); const xx=X(t),yy=Y(y); i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy); }
+    ctx.stroke();
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillStyle=inkSoft; ctx.fillRect(w-168,padT,9,2); ctx.fillText('input · sin(ωt)', w-154, padT+1);
+    ctx.fillStyle=accent; ctx.fillRect(w-168,padT+18,9,2); ctx.fillText('output · |G(jω)|·sin(ωt+∠G)', w-154, padT+19);
+  }
+
+  function tfRenderKatex(id, tex, display){
+    const el=document.getElementById(id);
+    if(window.katex){ try{ window.katex.render(tex, el, {throwOnError:false, displayMode:!!display}); return; }catch(e){} }
+    el.textContent=tex;
+  }
+
+  function tfRenderStaticFormulas(){
+    tfRenderKatex('tf-f-mag-sym', '|G(j\\omega)| = K \\cdot \\dfrac{\\prod_i |j\\omega - z_i|}{\\prod_j |j\\omega - p_j|}', true);
+    tfRenderKatex('tf-f-phase-sym', '\\angle G(j\\omega) = \\sum_i \\angle(j\\omega - z_i) - \\sum_j \\angle(j\\omega - p_j)', true);
+  }
+
+  function tfUpdateFormulas(zVecs, pVecs, magnitude, phase){
+    const degPhase=phase*180/Math.PI;
+    const numTex=zVecs.map(v=>v.mag.toFixed(2)).join(' \\cdot ') || '1';
+    const denTex=pVecs.map(v=>v.mag.toFixed(2)).join(' \\cdot ') || '1';
+    tfRenderKatex('tf-f-mag-val', '= \\dfrac{'+numTex+'}{'+denTex+'} = '+magnitude.toFixed(2), true);
+    const zAngTex=zVecs.map(v=>(v.ang*180/Math.PI).toFixed(1)+'^\\circ').join(' + ') || '0^\\circ';
+    const pAngTex=pVecs.map(v=>(v.ang*180/Math.PI).toFixed(1)+'^\\circ').join(' + ') || '0^\\circ';
+    tfRenderKatex('tf-f-phase-val', '= ('+zAngTex+') - ('+pAngTex+') = '+degPhase.toFixed(1)+'^\\circ', true);
+  }
+
+  function tfUpdateReadouts(magnitude, phase, omega){
+    const deg=phase*180/Math.PI;
+    document.getElementById('tf-ro-mag').textContent=magnitude.toFixed(2);
+    document.getElementById('tf-ro-phase').textContent=deg.toFixed(1)+'°';
+    document.getElementById('tf-ro-omega').textContent=omega.toFixed(2)+' rad/s';
+    document.getElementById('tf-ro-dir').textContent = deg<-0.05?'lags':deg>0.05?'leads':'in phase';
+  }
+
+  function tfUpdateVectorList(zVecs, pVecs){
+    const el=document.getElementById('tf-vectors-list'); el.innerHTML='';
+    function addRow(v, kind){
+      const row=document.createElement('div'); row.className='tf-vec-row'+(kind==='pole'?' pole':'');
+      const l=document.createElement('span'); l.textContent=v.label;
+      const r=document.createElement('span'); r.textContent='|·|='+v.mag.toFixed(2)+'  ∠='+(v.ang*180/Math.PI).toFixed(1)+'°';
+      row.appendChild(l); row.appendChild(r); el.appendChild(row);
+    }
+    zVecs.forEach(v=>addRow(v,'zero'));
+    pVecs.forEach(v=>addRow(v,'pole'));
+  }
+
+  function tfUpdateAll(){
+    const {zVecs,pVecs,magnitude,phase}=tfCompute(tfZeros,tfPoles,tfOmega);
+    tfUpdateFormulas(zVecs,pVecs,magnitude,phase);
+    tfUpdateReadouts(magnitude,phase,tfOmega);
+    tfUpdateVectorList(zVecs,pVecs);
+    if(tfSplaneGeom) tfDrawSplane(zVecs,pVecs,tfOmega);
+    if(tfTimeGeom) tfDrawTime(magnitude,phase,tfOmega);
+  }
+
+  tfRenderStaticFormulas();
+  tfRenderRoots();
+  tfUpdateAll();
 </script>
 </body>
 </html>
