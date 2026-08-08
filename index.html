@@ -155,6 +155,8 @@
   /* ===== transfer-function magnitude/phase viz ===== */
   .tf-layout{ display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:start; margin:6px 0 8px; }
   .tf-card{ border:1px solid var(--line); border-radius:14px; background:var(--card); padding:18px 20px 20px; }
+  .tf-roots-card{ margin:0 0 28px; }
+  .tf-roots-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 32px; }
   .tf-formula{ font-size:17px; color:var(--ink); margin-bottom:8px; overflow-x:auto; }
   .tf-formula.accent{ color:var(--accent); font-size:16px; margin-bottom:20px; }
   .tf-formula:last-child{ margin-bottom:0; }
@@ -186,6 +188,7 @@
     .dl-grid{ grid-template-columns:1fr; }
     .viz-detail .vlayout{ grid-template-columns:1fr; gap:26px; }
     .tf-layout{ grid-template-columns:1fr; gap:26px; }
+    .tf-roots-grid{ grid-template-columns:1fr; gap:0; }
   }
   @media(max-width:520px){
     .gal{ grid-template-columns:1fr; }
@@ -292,6 +295,22 @@
         </div>
         <div id="vd-tf" style="display:none;">
           <p class="sec-note" style="margin-bottom:24px; max-width:72ch;">G(s) is built from zeros and poles: <span class="notes"><span class="eq" style="padding:3px 8px;">G(s) = K·Π(s−zᵢ)/Π(s−pⱼ)</span></span> Evaluating G at s&nbsp;=&nbsp;jω means measuring, from every zero and pole to the point jω on the imaginary axis, a vector — its length and angle. Multiply the zero lengths, divide by the pole lengths, and you get |G(jω)|, the factor by which a sine wave of frequency ω is scaled. Add the zero angles, subtract the pole angles, and you get ∠G(jω), the phase shift applied to that same wave.</p>
+          <div class="tf-card tf-roots-card">
+            <div class="tf-roots-grid">
+              <div>
+                <div class="plot-title" style="margin-bottom:2px;">zeros</div>
+                <div id="tf-zeros-list"></div>
+                <button type="button" class="tf-add-btn" id="tf-add-zero">+ zero</button>
+              </div>
+              <div>
+                <div class="plot-title" style="margin-bottom:2px;">poles</div>
+                <div id="tf-poles-list"></div>
+                <button type="button" class="tf-add-btn accent" id="tf-add-pole">+ pole</button>
+              </div>
+            </div>
+            <div class="plot-title" style="margin:18px 0 6px;">per-root vectors</div>
+            <div id="tf-vectors-list"></div>
+          </div>
           <div class="tf-layout">
             <div class="plot-wrap">
               <div class="plot-title">s-plane &nbsp;·&nbsp; vectors to jω</div>
@@ -314,16 +333,6 @@
                 <div class="ro"><div class="rk">∠G(jω)</div><div class="rv" id="tf-ro-phase">—</div></div>
                 <div class="ro"><div class="rk">Frequency ω</div><div class="rv" id="tf-ro-omega" style="font-size:22px;">—</div></div>
                 <div class="ro"><div class="rk">Output vs input</div><div class="rv" id="tf-ro-dir" style="font-size:22px;">—</div></div>
-              </div>
-              <div class="tf-card">
-                <div class="plot-title" style="margin-bottom:2px;">zeros</div>
-                <div id="tf-zeros-list"></div>
-                <button type="button" class="tf-add-btn" id="tf-add-zero">+ zero</button>
-                <div class="plot-title" style="margin:18px 0 2px;">poles</div>
-                <div id="tf-poles-list"></div>
-                <button type="button" class="tf-add-btn accent" id="tf-add-pole">+ pole</button>
-                <div class="plot-title" style="margin:18px 0 6px;">per-root vectors</div>
-                <div id="tf-vectors-list"></div>
               </div>
             </div>
           </div>
