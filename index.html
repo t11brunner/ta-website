@@ -305,29 +305,30 @@
   /* =====================================================================
      EDITING GUIDE — update content here each week
      ---------------------------------------------------------------------
-     • Exercise slides: save as  slides/week-05-exercise.pdf  and
-       slides/week-05-exercise-gaps.pdf  (match the two-digit week
-       number), then set  ex:true  on that week — this lights up both
-       the "Slides" and "Slides gaps" buttons on its row.
+     • Exercise slides: save as  slides/week-05-exercise.pdf  and set
+       ex:true  on that week to light up its "Slides" button.
+     • Gaps handout: save as  slides/week-05-exercise-gaps.pdf  and set
+       gaps:true  to light up its "Slides gaps" button. Independent of
+       ex — a week can have one file without the other.
      • Visualisations live on the Visualisations page, not per week —
        add {k:"unique-key", label:"Name"} to a week's viz[] there and
        set  live:true  once the demo is built.
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
-    {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:false, viz:[]},
-    {n:2,  t:"Modeling",                           date:"Sep 25", ex:false, viz:[]},
-    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:false, viz:[]},
-    {n:4,  t:"Time Response",                      date:"Oct 9",  ex:false, viz:[]},
-    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, viz:[{k:"tfgeom", label:"Transfer function: magnitude & phase", live:true}]},
-    {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, viz:[]},
-    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, viz:[]},
-    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, viz:[{k:"step2", label:"Second-order step response", live:true}]},
-    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, viz:[]},
-    {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, viz:[]},
-    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:false, viz:[]},
-    {n:12, t:"Time Delays",                        date:"Dec 4",  ex:false, viz:[]},
-    {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:false, viz:[]},
+    {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:true,  gaps:true,  viz:[]},
+    {n:2,  t:"Modeling",                           date:"Sep 25", ex:true,  gaps:true,  viz:[]},
+    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:true,  gaps:true,  viz:[]},
+    {n:4,  t:"Time Response",                      date:"Oct 9",  ex:true,  gaps:true,  viz:[]},
+    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:true,  gaps:true,  viz:[{k:"tfgeom", label:"Transfer function: magnitude & phase", live:true}]},
+    {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:true,  gaps:true,  viz:[]},
+    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:true,  gaps:false, viz:[]},
+    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:true,  gaps:true,  viz:[{k:"step2", label:"Second-order step response", live:true}]},
+    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:true,  gaps:true,  viz:[]},
+    {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:true,  gaps:true,  viz:[]},
+    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:true,  gaps:true,  viz:[]},
+    {n:12, t:"Time Delays",                        date:"Dec 4",  ex:true,  gaps:true,  viz:[]},
+    {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:true,  gaps:true,  viz:[]},
   ];
 
   // builds one Slides/Slides-gaps button; falls back gracefully when a file isn't posted yet
@@ -347,7 +348,7 @@
       <div class="topic"><div class="tt">${w.t}</div><div class="date">LECTURE · ${w.date.toUpperCase()}, ${YEAR}</div></div>
       <div class="act">
         ${dlBtn('Slides', w.ex, 'slides/week-'+pad+'-exercise.pdf', 'CS301-week-'+pad+'-exercise.pdf')}
-        ${dlBtn('Slides gaps', w.ex, 'slides/week-'+pad+'-exercise-gaps.pdf', 'CS301-week-'+pad+'-exercise-gaps.pdf')}
+        ${dlBtn('Slides gaps', w.gaps, 'slides/week-'+pad+'-exercise-gaps.pdf', 'CS301-week-'+pad+'-exercise-gaps.pdf')}
       </div>`;
     wl.appendChild(r);
   });
