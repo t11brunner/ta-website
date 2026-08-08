@@ -6,7 +6,7 @@
 <title>Control Systems 1 — TA Site</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <style>
@@ -25,7 +25,7 @@
     --maxw: 760px;
     --f-head:'Public Sans', system-ui, sans-serif;
     --f-body:'Public Sans', system-ui, sans-serif;
-    --f-mono:'JetBrains Mono', monospace;
+    --f-mono:'IBM Plex Mono', monospace;
   }
 
   *{ box-sizing:border-box; }
@@ -557,7 +557,7 @@
     ctx.fillRect(padL, Y(1.02), pw, Y(0.98)-Y(1.02));
     // grid + y labels
     ctx.strokeStyle='#e9e7df'; ctx.lineWidth=1; ctx.fillStyle='#a3a296';
-    ctx.font='10px JetBrains Mono, monospace'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.font='10px IBM Plex Mono, monospace'; ctx.textAlign='right'; ctx.textBaseline='middle';
     const yticks=[0,0.5,1,1.5,2].filter(v=>v<=ymax+0.001);
     yticks.forEach(v=>{ const yy=Y(v); ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(w-padR,yy); ctx.stroke(); ctx.fillText(v.toFixed(1), padL-7, yy); });
     // reference line y=1
@@ -587,7 +587,7 @@
     ctx.strokeStyle='#dedcd2'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(w,cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,h); ctx.stroke();
-    ctx.fillStyle='#a3a296'; ctx.font='9px JetBrains Mono, monospace';
+    ctx.fillStyle='#a3a296'; ctx.font='9px IBM Plex Mono, monospace';
     ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillText('Re', w-4, cy+4);
     ctx.textAlign='left'; ctx.fillText('Im', cx+4, 3);
     // poles
@@ -750,7 +750,7 @@
     ctx.strokeStyle='#dedcd2'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(w,cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,h); ctx.stroke();
-    ctx.fillStyle='#a3a296'; ctx.font='9px JetBrains Mono, monospace';
+    ctx.fillStyle='#a3a296'; ctx.font='9px IBM Plex Mono, monospace';
     ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillText('Re', w-4, cy+4);
     ctx.textAlign='left'; ctx.fillText('Im', cx+4, 3);
     function arrow(x1,y1,x2,y2,color,dash){
@@ -768,7 +768,7 @@
     zVecs.forEach(v=>{ ctx.beginPath(); ctx.arc(sx(v.re),sy(v.im),5,0,7); ctx.strokeStyle='#26261f'; ctx.lineWidth=1.8; ctx.stroke(); });
     pVecs.forEach(v=>{ const x=sx(v.re),y=sy(v.im),r=5; ctx.strokeStyle=accent; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y+r); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y+r); ctx.stroke(); });
     ctx.fillStyle=accent; ctx.beginPath(); ctx.arc(jx,jy,5.5,0,7); ctx.fill();
-    ctx.fillStyle='#26261f'; ctx.font='10px JetBrains Mono, monospace'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+    ctx.fillStyle='#26261f'; ctx.font='10px IBM Plex Mono, monospace'; ctx.textAlign='left'; ctx.textBaseline='bottom';
     ctx.fillText('jω', jx+9, jy-5);
   }
 
@@ -781,7 +781,7 @@
     const T=Math.min(40, Math.max(6, 4*Math.PI/omega));
     const amp=Math.max(1,magnitude)*1.25;
     const X=t=>padL+(t/T)*pw, Y=y=>padT+ph/2-(y/amp)*(ph/2);
-    ctx.strokeStyle='#efeee6'; ctx.lineWidth=1; ctx.fillStyle='#a3a296'; ctx.font='10px JetBrains Mono, monospace';
+    ctx.strokeStyle='#efeee6'; ctx.lineWidth=1; ctx.fillStyle='#a3a296'; ctx.font='10px IBM Plex Mono, monospace';
     ctx.beginPath(); ctx.moveTo(padL,Y(0)); ctx.lineTo(w-padR,Y(0)); ctx.stroke();
     const n=400;
     ctx.strokeStyle=inkSoft; ctx.setLineDash([5,4]); ctx.lineWidth=1.8; ctx.beginPath();
