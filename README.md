@@ -16,18 +16,23 @@ needed. To use a custom domain later, add it under Settings → Pages.
 
 ## Updating content each week
 
-All content lives in the `WEEKS`, `HW`, and `LINKS` arrays near the top of the
-`<script>` block in `index.html` (look for the **EDITING GUIDE** comment).
+All content lives in the `WEEKS` array near the top of the `<script>` block
+in `index.html` (look for the **EDITING GUIDE** comment). Each week is a row
+with two buttons, "Slides" and "Slides gaps" — there are no per-week pages
+and no problem sets for now.
 
 ### Posting slides
-1. Export your slides to PDF.
-2. Save it as `slides/week-05.pdf` (two-digit week number).
-3. In `index.html`, set `pdf:true` on that week.
-4. Commit & push. The week's download button activates automatically.
+1. Export your slides to PDF, plus the gaps/handout version.
+2. Save them as `slides/week-05-exercise.pdf` and
+   `slides/week-05-exercise-gaps.pdf` (two-digit week number).
+3. In `index.html`, set `ex:true` on that week.
+4. Commit & push. Both of the week's buttons activate automatically.
 
 ### Adding a visualisation
+Visualisations live only on the Visualisations page/gallery, not per week.
 1. Add `{k:"unique-key", label:"Demo name"}` to that week's `viz:[ ]`.
-2. Build the demo (see the second-order step-response demo as the template).
+2. Build the demo (see the second-order step-response or transfer-function
+   demos as the template).
 3. Set `live:true` once it's ready.
 
 ## Files
@@ -35,5 +40,5 @@ All content lives in the `WEEKS`, `HW`, and `LINKS` arrays near the top of the
 | File | Purpose |
 |------|---------|
 | `index.html` | The whole site. Edit content arrays here. |
-| `slides/` | Drop weekly `week-NN.pdf` files here. |
+| `slides/` | Drop weekly `week-NN-exercise.pdf` / `week-NN-exercise-gaps.pdf` files here. |
 | `Control Systems TA Site.html` | Design reference (accent/font explorer) — not deployed. |
