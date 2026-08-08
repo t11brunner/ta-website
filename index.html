@@ -58,19 +58,19 @@
   .sec-note{ color:var(--ink-soft); font-size:15px; line-height:1.7; margin:0 0 40px; max-width:52ch; }
 
   /* week index — hairline rules, no surfaces */
-  .row{ display:flex; align-items:center; gap:24px; padding:20px 10px; margin:0 -10px; border-top:1px solid var(--line-soft); cursor:pointer; border-radius:10px; transition:padding-left .14s ease, background .14s; }
+  .row{ display:flex; align-items:center; gap:24px; padding:20px 10px; margin:0 -10px; border-top:1px solid var(--line-soft); border-radius:10px; }
   .row:last-child{ border-bottom:1px solid var(--line-soft); }
-  .row:hover{ padding-left:18px; background:var(--card); }
   .row .num{ font-family:var(--f-mono); font-size:12px; color:var(--mute); width:24px; flex:none; }
   .row .topic{ flex:1; }
-  .row .topic .tt{ font-family:var(--f-head); font-weight:600; font-size:20px; line-height:1.15; transition:color .14s; letter-spacing:-0.01em; }
-  .row:hover .topic .tt{ color:var(--accent); }
+  .row .topic .tt{ font-family:var(--f-head); font-weight:600; font-size:20px; line-height:1.15; letter-spacing:-0.01em; }
   .row .topic .date{ font-family:var(--f-head); font-weight:500; font-size:11px; color:var(--mute); margin-top:5px; letter-spacing:.06em; text-transform:uppercase; }
-  .row .act{ display:flex; align-items:center; gap:14px; flex:none; }
-  .tag{ font-family:var(--f-mono); font-size:10px; color:var(--accent); border-radius:999px; padding:4px 11px; background:var(--accent-soft); white-space:nowrap; }
-  .tag.dim{ color:var(--mute); background:var(--paper-2); }
-  .row .arrow{ color:var(--mute); font-size:15px; transition:transform .14s; }
-  .row:hover .arrow{ transform:translateX(4px); }
+  .row .act{ display:flex; align-items:center; gap:10px; flex:none; }
+
+  /* per-week download buttons */
+  .dl-btn{ font-family:var(--f-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--line); border-radius:999px; padding:8px 14px; white-space:nowrap; text-decoration:none; transition:border-color .15s, color .15s, background .15s; }
+  .dl-btn.avail{ color:var(--ink); cursor:pointer; }
+  .dl-btn.avail:hover{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+  .dl-btn.dim{ color:var(--mute); cursor:default; }
 
   /* placeholder media — hatch only, no frame */
   .ph{
@@ -78,40 +78,11 @@
     display:grid; place-items:center; color:var(--mute);
     font-family:var(--f-mono); font-size:10px; text-align:center; padding:10px; letter-spacing:.04em;
   }
-  /* week detail */
   .back{ font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); cursor:pointer; display:inline-flex; gap:7px; margin-bottom:28px; align-items:center; }
   .back:hover{ color:var(--accent); }
   .wd-eyebrow{ font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
-  .wd-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin:14px 0 22px; }
-  .wd-head h2{ font-family:var(--f-head); font-weight:700; font-size:40px; margin:0; letter-spacing:-0.025em; }
-  .wd-meta{ display:flex; gap:26px; flex-wrap:wrap; font-size:13px; color:var(--mute); padding-bottom:22px; border-bottom:1px solid var(--line-soft); }
-  .wd-meta b{ color:var(--ink); font-weight:500; }
-
-  /* week detail — downloads */
-  .dl-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 8px; }
-  .dl-card{ position:relative; display:block; border:1px solid var(--line); border-radius:14px; background:var(--card); padding:20px 44px 18px 20px; text-decoration:none; color:inherit; transition:border-color .15s, transform .12s; }
-  .dl-card.avail{ cursor:pointer; }
-  .dl-card.avail:hover{ border-color:var(--accent); transform:translateY(-3px); }
-  .dl-card.avail:active{ transform:translateY(-1px); }
-  .dl-card.dim{ cursor:default; }
-  .dl-badge{ width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-family:var(--f-mono); font-size:9px; letter-spacing:.02em; background:var(--paper-2); color:var(--mute); transition:background .15s, color .15s; }
-  .dl-card.avail .dl-badge{ background:var(--accent-soft); color:var(--accent); }
-  .dl-label{ display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); margin-top:16px; }
-  .dl-name{ font-family:var(--f-head); font-weight:600; font-size:16px; letter-spacing:-0.01em; margin-top:6px; line-height:1.3; }
-  .dl-status{ font-family:var(--f-mono); font-size:10px; letter-spacing:.04em; color:var(--mute); margin-top:10px; }
-  .dl-card.avail .dl-status{ color:var(--accent); }
-  .dl-arrow{ position:absolute; top:20px; right:20px; color:var(--mute); font-size:13px; transition:transform .14s, color .14s; }
-  .dl-card.avail .dl-arrow{ color:var(--accent); }
-  .dl-card.avail:hover .dl-arrow{ transform:translate(3px,-3px); }
 
   .subhead{ font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); margin:44px 0 16px; }
-  .viz-inline{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
-  .viz-card{ cursor:pointer; }
-  .viz-card .ph{ height:130px; margin-bottom:12px; transition:color .14s; }
-  .viz-card:hover{ --hatch: oklch(0.52 0.09 250 / 0.05); }
-  .viz-card:hover .ph{ color:var(--accent); }
-  .viz-card .vt{ font-family:var(--f-head); font-weight:600; font-size:16px; letter-spacing:-0.01em; }
-  .viz-card .vlab{ font-family:var(--f-mono); font-size:9px; color:var(--mute); margin-top:5px; }
 
   /* gallery */
   .gal{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
@@ -183,16 +154,15 @@
   @media(max-width:760px){
     .masthead{ padding-top:56px; }
     .masthead h1{ font-size:42px; }
-    .viz-inline{ grid-template-columns:1fr 1fr; gap:20px; }
     .gal{ grid-template-columns:1fr 1fr; gap:20px; }
-    .dl-grid{ grid-template-columns:1fr; }
     .viz-detail .vlayout{ grid-template-columns:1fr; gap:26px; }
     .tf-layout{ grid-template-columns:1fr; gap:26px; }
     .tf-roots-grid{ grid-template-columns:1fr; gap:0; }
   }
   @media(max-width:520px){
     .gal{ grid-template-columns:1fr; }
-    .wd-meta{ gap:14px; }
+    .row{ flex-wrap:wrap; row-gap:12px; }
+    .row .act{ width:100%; padding-left:48px; }
   }
 </style>
 </head>
@@ -216,36 +186,11 @@
       </div>
     </section>
 
-    <!-- ===== WEEK DETAIL ===== -->
-    <section class="screen" id="s-week">
-      <div class="wrap">
-        <div class="back" id="back-weeks">← all weeks</div>
-        <div class="wd-eyebrow" id="wd-num">WEEK 08</div>
-        <div class="wd-head">
-          <h2 id="wd-title">Time-Domain Specifications</h2>
-        </div>
-        <div class="wd-meta">
-          <span><b id="wd-date">Nov 6, 2026</b> &nbsp;exercise session</span>
-        </div>
-
-        <div class="subhead">Downloads</div>
-        <div class="dl-grid" id="wd-downloads"></div>
-
-        <div class="subhead" id="wd-viz-h">Visualisations for this week</div>
-        <div class="viz-inline" id="wd-viz"></div>
-
-        <div class="subhead">Reading &amp; notes</div>
-        <div class="notes" style="max-width:62ch;">
-          <p>Lecture notes and suggested textbook sections will appear here. For now this space shows where per-week supplementary material lives.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- ===== VISUALISATIONS GALLERY ===== -->
     <section class="screen" id="s-viz">
       <div class="wide">
         <h2 class="sec-title">Visualisations</h2>
-        <p class="sec-note">Interactive demos that accompany the lectures, grouped by topic. Each one also appears on the page of the week it belongs to. More will be added as the semester progresses.</p>
+        <p class="sec-note">Interactive demos that accompany the lectures, grouped by topic. More will be added as the semester progresses.</p>
         <div class="gal" id="viz-gal"></div>
       </div>
     </section>
@@ -360,14 +305,13 @@
   /* =====================================================================
      EDITING GUIDE — update content here each week
      ---------------------------------------------------------------------
-     • Exercise slides: save as  slides/week-05-exercise.pdf  (match the
-       two-digit week number) and set  ex:true  on that week.
-     • Problem set: save as  slides/week-05-problemset.pdf  and set
-       hw.ps:true. Solutions: slides/week-05-solutions.pdf, hw.sol:true.
-     • Add a week by appending to WEEKS. Give it an  hw  field to attach
-       a problem set due that week (omit  hw  if none).
-     • Visualisations: add {k:"unique-key", label:"Name"} to a week's viz[].
-       Set  live:true  once the demo is built (only step2 is live now).
+     • Exercise slides: save as  slides/week-05-exercise.pdf  and
+       slides/week-05-exercise-gaps.pdf  (match the two-digit week
+       number), then set  ex:true  on that week — this lights up both
+       the "Slides" and "Slides gaps" buttons on its row.
+     • Visualisations live on the Visualisations page, not per week —
+       add {k:"unique-key", label:"Name"} to a week's viz[] there and
+       set  live:true  once the demo is built.
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
@@ -386,20 +330,25 @@
     {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:false, viz:[]},
   ];
 
+  // builds one Slides/Slides-gaps button; falls back gracefully when a file isn't posted yet
+  function dlBtn(label, avail, href, dlname){
+    return avail
+      ? `<a class="dl-btn avail" href="${href}" download="${dlname}">${label}</a>`
+      : `<span class="dl-btn dim">${label}</span>`;
+  }
+
   // ---- weeks list ----
   const wl=document.getElementById('weeks-list');
   WEEKS.forEach(w=>{
     const r=document.createElement('div'); r.className='row';
+    const pad=String(w.n).padStart(2,'0');
     r.innerHTML=`
-      <div class="num">${String(w.n).padStart(2,'0')}</div>
+      <div class="num">${pad}</div>
       <div class="topic"><div class="tt">${w.t}</div><div class="date">LECTURE · ${w.date.toUpperCase()}, ${YEAR}</div></div>
       <div class="act">
-        <span class="tag ${w.ex?'':'dim'}">${w.ex?'slides ↓':'soon'}</span>
-        ${w.viz.length?`<span class="tag">${w.viz.length} viz</span>`:''}
-        ${w.hw?`<span class="tag">PS due</span>`:''}
-        <span class="arrow">→</span>
+        ${dlBtn('Slides', w.ex, 'slides/week-'+pad+'-exercise.pdf', 'CS301-week-'+pad+'-exercise.pdf')}
+        ${dlBtn('Slides gaps', w.ex, 'slides/week-'+pad+'-exercise-gaps.pdf', 'CS301-week-'+pad+'-exercise-gaps.pdf')}
       </div>`;
-    r.addEventListener('click',()=>openWeek(w.n));
     wl.appendChild(r);
   });
 
@@ -422,60 +371,7 @@
   function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show')); document.getElementById(id).classList.add('show'); window.scrollTo({top:0}); }
   function show(screen){ showScreen('s-'+screen); setNav(screen); }
   nav.addEventListener('click',e=>{ const s=e.target.closest('span'); if(s) show(s.dataset.screen); });
-  document.getElementById('back-weeks').addEventListener('click',()=>show('weeks'));
   document.getElementById('back-viz').addEventListener('click',()=>show('viz'));
-
-  // builds one download-card's markup; falls back gracefully when a file isn't posted yet
-  function dlCard(badge, label, avail, href, dlname, status){
-    const cls = 'dl-card ' + (avail?'avail':'dim');
-    const inner = `
-      <span class="dl-badge">${badge}</span>
-      <span class="dl-label">${label}</span>
-      <div class="dl-name">${avail?dlname:'—'}</div>
-      <div class="dl-status">${status}</div>
-      ${avail?'<span class="dl-arrow">↓</span>':''}`;
-    return avail
-      ? `<a class="${cls}" href="${href}" download="${dlname}">${inner}</a>`
-      : `<div class="${cls}">${inner}</div>`;
-  }
-
-  function openWeek(n){
-    const w=WEEKS.find(x=>x.n===n);
-    const pad=String(w.n).padStart(2,'0');
-    document.getElementById('wd-num').textContent='WEEK '+pad;
-    document.getElementById('wd-title').textContent=w.t;
-    document.getElementById('wd-date').textContent=w.date+', '+YEAR;
-
-    const dls=document.getElementById('wd-downloads');
-    dls.innerHTML =
-      dlCard('EX','Exercise slides', w.ex,
-        'slides/week-'+pad+'-exercise.pdf', 'CS301-week-'+pad+'-exercise.pdf',
-        w.ex?'available · click to download':'posts on session day') +
-      (w.hw
-        ? dlCard('PS','Problem set', w.hw.ps,
-            'slides/week-'+pad+'-problemset.pdf', 'CS301-week-'+pad+'-problemset.pdf',
-            w.hw.ps?('due '+w.hw.due):('due '+w.hw.due+' · posting soon'))
-        : dlCard('PS','Problem set', false, '', '', 'no problem set this week')) +
-      (w.hw
-        ? dlCard('SOL','Solutions', w.hw.sol,
-            'slides/week-'+pad+'-solutions.pdf', 'CS301-week-'+pad+'-solutions.pdf',
-            w.hw.sol?'available · click to download':'posts after due date')
-        : dlCard('SOL','Solutions', false, '', '', 'no problem set this week'));
-
-    const vz=document.getElementById('wd-viz'), vh=document.getElementById('wd-viz-h');
-    if(w.viz.length){
-      vh.style.display='block';
-      vz.style.display='grid';
-      vz.innerHTML='';
-      w.viz.forEach(v=>{
-        const c=document.createElement('div'); c.className='viz-card';
-        c.innerHTML=`<div class="ph">${v.label.toLowerCase()}</div><div class="vt">${v.label}</div><div class="vlab">${v.live?'● interactive':'○ in development'}</div>`;
-        c.addEventListener('click',()=>openViz(v,w));
-        vz.appendChild(c);
-      });
-    } else { vh.style.display='none'; vz.style.display='none'; }
-    showScreen('s-week'); setNav('weeks');
-  }
 
   function openViz(v,w){
     document.getElementById('vd-eyebrow').textContent='WEEK '+String(w.n).padStart(2,'0')+' · VISUALISATION';
