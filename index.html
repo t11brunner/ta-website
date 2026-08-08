@@ -200,7 +200,7 @@
   <div class="canvas">
     <div class="masthead">
       <h1>Control Systems&nbsp;I</h1>
-      <div class="sub">tibrunner@ethz.ch</div>
+      <div class="sub">Contact: tibrunner@ethz.ch</div>
     </div>
 
     <nav class="main" id="nav">
@@ -257,7 +257,7 @@
         <div class="wd-eyebrow" id="vd-eyebrow">WEEK 08 · VISUALISATION</div>
         <h2 class="sec-title" id="vd-title" style="margin-bottom:14px;">Second-order step response</h2>
         <div id="vd-live">
-          <p class="sec-note" style="margin-bottom:24px;">Every second-order system <span class="notes"><span class="eq" style="padding:3px 8px;">G(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)</span></span> is characterised by its damping ratio ζ and natural frequency ωₙ. Drag the sliders to see how the poles move and how the step response changes.</p>
+          <p class="sec-note" style="margin-bottom:24px;">Every second-order system <span class="notes"><span class="eq" id="eq-step-formula"></span></span> is characterised by its damping ratio ζ and natural frequency ωₙ. Drag the sliders to see how the poles move and how the step response changes.</p>
           <div class="vlayout">
             <div class="plot-wrap">
               <div class="plot-title">Step response &nbsp;·&nbsp; y(t)</div>
@@ -294,7 +294,7 @@
           </div>
         </div>
         <div id="vd-tf" style="display:none;">
-          <p class="sec-note" style="margin-bottom:24px; max-width:72ch;">G(s) is built from zeros and poles: <span class="notes"><span class="eq" style="padding:3px 8px;">G(s) = K·Π(s−zᵢ)/Π(s−pⱼ)</span></span> Evaluating G at s&nbsp;=&nbsp;jω means measuring, from every zero and pole to the point jω on the imaginary axis, a vector — its length and angle. Multiply the zero lengths, divide by the pole lengths, and you get |G(jω)|, the factor by which a sine wave of frequency ω is scaled. Add the zero angles, subtract the pole angles, and you get ∠G(jω), the phase shift applied to that same wave.</p>
+          <p class="sec-note" style="margin-bottom:24px; max-width:72ch;">G(s) is built from zeros and poles: <span class="notes"><span class="eq" id="eq-tf-formula"></span></span> Evaluating G at s&nbsp;=&nbsp;jω means measuring, from every zero and pole to the point jω on the imaginary axis, a vector — its length and angle. Multiply the zero lengths, divide by the pole lengths, and you get |G(jω)|, the factor by which a sine wave of frequency ω is scaled. Add the zero angles, subtract the pole angles, and you get ∠G(jω), the phase shift applied to that same wave.</p>
           <div class="tf-card tf-roots-card">
             <div class="tf-roots-grid">
               <div>
@@ -353,7 +353,7 @@
       </div>
     </section>
 
-    <footer class="sitefoot">CONTROL SYSTEMS I · TA SITE · HS26 · HOSTED ON GITHUB PAGES</footer>
+    <footer class="sitefoot">CONTROL SYSTEMS I · HS26 · HOSTED ON GITHUB PAGES</footer>
   </div>
 
 <script>
@@ -848,6 +848,10 @@
   tfRenderStaticFormulas();
   tfRenderRoots();
   tfUpdateAll();
+
+  // inline formula chips in intro copy — always KaTeX, never plain text
+  tfRenderKatex('eq-step-formula', 'G(s) = \\dfrac{\\omega_n^2}{s^2 + 2\\zeta\\omega_n s + \\omega_n^2}', false);
+  tfRenderKatex('eq-tf-formula', 'G(s) = K \\cdot \\dfrac{\\prod_i (s - z_i)}{\\prod_j (s - p_j)}', false);
 </script>
 </body>
 </html>
