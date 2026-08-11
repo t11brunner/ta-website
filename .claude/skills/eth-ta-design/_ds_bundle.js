@@ -1139,9 +1139,9 @@ function StepResponseDemo() {
         Y = y => padT + ph - y / ymax * ph;
       ctx.fillStyle = 'color-mix(in srgb,' + accent + ' 10%, transparent)';
       ctx.fillRect(padL, Y(1.02), pw, Y(0.98) - Y(1.02));
-      ctx.strokeStyle = '#e9e7df';
+      ctx.strokeStyle = '#dde3e5';
       ctx.lineWidth = 1;
-      ctx.fillStyle = '#a3a296';
+      ctx.fillStyle = '#8b9497';
       ctx.font = '10px JetBrains Mono, monospace';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
@@ -1153,7 +1153,7 @@ function StepResponseDemo() {
         ctx.stroke();
         ctx.fillText(v.toFixed(1), padL - 7, yy);
       });
-      ctx.strokeStyle = '#a3a296';
+      ctx.strokeStyle = '#8b9497';
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.moveTo(padL, Y(1));
@@ -1165,12 +1165,12 @@ function StepResponseDemo() {
       const xstep = T <= 8 ? 2 : T <= 20 ? 5 : 10;
       for (let t = 0; t <= T + 0.001; t += xstep) {
         const xx = X(t);
-        ctx.strokeStyle = '#efeee6';
+        ctx.strokeStyle = '#e3e9eb';
         ctx.beginPath();
         ctx.moveTo(xx, padT);
         ctx.lineTo(xx, padT + ph);
         ctx.stroke();
-        ctx.fillStyle = '#a3a296';
+        ctx.fillStyle = '#8b9497';
         ctx.fillText(t + 's', xx, padT + ph + 6);
       }
       ctx.strokeStyle = accent;
@@ -1204,7 +1204,7 @@ function StepResponseDemo() {
       const range = Math.max(mag * 1.2, wn * 1.25, 1);
       const sx = v => cx + v / range * (w * 0.66),
         sy = v => cy - v / range * (h * 0.42);
-      ctx.strokeStyle = '#dedcd2';
+      ctx.strokeStyle = '#d1d8da';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, cy);
@@ -1214,7 +1214,7 @@ function StepResponseDemo() {
       ctx.moveTo(cx, 0);
       ctx.lineTo(cx, h);
       ctx.stroke();
-      ctx.fillStyle = '#a3a296';
+      ctx.fillStyle = '#8b9497';
       ctx.font = '9px JetBrains Mono, monospace';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'top';

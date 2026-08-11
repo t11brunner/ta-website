@@ -61,13 +61,13 @@ function StepResponseDemo() {
       const X = t => padL + (t / T) * pw, Y = y => padT + ph - (y / ymax) * ph;
       ctx.fillStyle = 'color-mix(in srgb,' + accent + ' 10%, transparent)';
       ctx.fillRect(padL, Y(1.02), pw, Y(0.98) - Y(1.02));
-      ctx.strokeStyle = '#e9e7df'; ctx.lineWidth = 1; ctx.fillStyle = '#a3a296';
+      ctx.strokeStyle = '#dde3e5'; ctx.lineWidth = 1; ctx.fillStyle = '#8b9497';
       ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
       [0, 0.5, 1, 1.5, 2].filter(v => v <= ymax + 0.001).forEach(v => { const yy = Y(v); ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(w - padR, yy); ctx.stroke(); ctx.fillText(v.toFixed(1), padL - 7, yy); });
-      ctx.strokeStyle = '#a3a296'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(padL, Y(1)); ctx.lineTo(w - padR, Y(1)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = '#8b9497'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(padL, Y(1)); ctx.lineTo(w - padR, Y(1)); ctx.stroke(); ctx.setLineDash([]);
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       const xstep = T <= 8 ? 2 : T <= 20 ? 5 : 10;
-      for (let t = 0; t <= T + 0.001; t += xstep) { const xx = X(t); ctx.strokeStyle = '#efeee6'; ctx.beginPath(); ctx.moveTo(xx, padT); ctx.lineTo(xx, padT + ph); ctx.stroke(); ctx.fillStyle = '#a3a296'; ctx.fillText(t + 's', xx, padT + ph + 6); }
+      for (let t = 0; t <= T + 0.001; t += xstep) { const xx = X(t); ctx.strokeStyle = '#e3e9eb'; ctx.beginPath(); ctx.moveTo(xx, padT); ctx.lineTo(xx, padT + ph); ctx.stroke(); ctx.fillStyle = '#8b9497'; ctx.fillText(t + 's', xx, padT + ph + 6); }
       ctx.strokeStyle = accent; ctx.lineWidth = 2.4; ctx.beginPath();
       for (let i = 0; i < ys.length; i++) { const xx = X(ts[i]), yy = Y(ys[i]); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); }
       ctx.stroke();
@@ -79,10 +79,10 @@ function StepResponseDemo() {
       const mag = (zeta + Math.sqrt(Math.max(zeta * zeta - 1, 0))) * wn;
       const range = Math.max(mag * 1.2, wn * 1.25, 1);
       const sx = v => cx + (v / range) * (w * 0.66), sy = v => cy - (v / range) * (h * 0.42);
-      ctx.strokeStyle = '#dedcd2'; ctx.lineWidth = 1;
+      ctx.strokeStyle = '#d1d8da'; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
-      ctx.fillStyle = '#a3a296'; ctx.font = '9px JetBrains Mono, monospace';
+      ctx.fillStyle = '#8b9497'; ctx.font = '9px JetBrains Mono, monospace';
       ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('Re', w - 4, cy + 4);
       ctx.textAlign = 'left'; ctx.fillText('Im', cx + 4, 3);
       const sigma = -zeta * wn; let poles;

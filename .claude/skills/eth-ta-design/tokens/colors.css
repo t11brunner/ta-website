@@ -1,13 +1,13 @@
 :root{
   /* base — paper & ink */
-  --paper:#f8f7f3;
-  --paper-2:#f1efe8;
-  --ink:#26261f;
-  --ink-soft:#6a6a60;
-  --mute:#a3a296;
-  --line:#dedcd2;
-  --line-soft:#e9e7df;
-  --card:#fffefb;
+  --paper:#eef1f2;
+  --paper-2:#e3e8ea;
+  --ink:#1d2326;
+  --ink-soft:#565f63;
+  --mute:#8b9497;
+  --line:#d1d8da;
+  --line-soft:#dde3e5;
+  --card:#f8fafb;
   --hatch: rgba(0,0,0,0.02);
 
   /* accent — single cool-blue oklch accent, used sparingly */

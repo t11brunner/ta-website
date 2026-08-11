@@ -11,16 +11,16 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <style>
   :root{
-    --paper:#f8f7f3;
-    --paper-2:#f1efe8;
-    --ink:#26261f;
-    --ink-soft:#6a6a60;
-    --mute:#a3a296;
-    --line:#dedcd2;
-    --line-soft:#e9e7df;
+    --paper:#eef1f2;
+    --paper-2:#e3e8ea;
+    --ink:#1d2326;
+    --ink-soft:#565f63;
+    --mute:#8b9497;
+    --line:#d1d8da;
+    --line-soft:#dde3e5;
     --accent: oklch(0.52 0.09 250);
     --accent-soft: oklch(0.52 0.09 250 / 0.1);
-    --card:#fffefb;
+    --card:#f8fafb;
     --hatch: rgba(0,0,0,0.02);
     --maxw: 760px;
     --f-head:'Public Sans', system-ui, sans-serif;
@@ -43,7 +43,7 @@
 
   .masthead{ max-width:var(--maxw); margin:0 auto; padding:100px 0 0; text-align:center; }
   .masthead h1{ font-family:var(--f-head); font-weight:700; font-size:56px; line-height:1.05; margin:0; letter-spacing:-0.02em; }
-  .masthead .sub{ font-family:var(--f-mono); font-size:11px; color:var(--mute); letter-spacing:.08em; margin-top:14px; }
+  .masthead .sub{ font-family:var(--f-mono); font-size:11px; color:var(--ink-soft); letter-spacing:.08em; margin-top:14px; }
 
   nav.main{ display:flex; justify-content:center; gap:4px; margin:44px auto 56px; flex-wrap:wrap; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:7px 0; max-width:var(--maxw); }
   nav.main span{ cursor:pointer; color:var(--mute); font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; padding:7px 12px; border-radius:999px; transition:color .15s, background .15s; }
@@ -176,6 +176,7 @@
     <nav class="main" id="nav">
       <span class="cur" data-screen="weeks">weeks</span>
       <span data-screen="viz">visualisations</span>
+      <span data-screen="resources">resources</span>
     </nav>
 
     <!-- ===== WEEKS ===== -->
@@ -190,8 +191,15 @@
     <section class="screen" id="s-viz">
       <div class="wide">
         <h2 class="sec-title">Visualisations</h2>
-        <p class="sec-note">Interactive demos that accompany the lectures, grouped by topic. More will be added as the semester progresses.</p>
         <div class="gal" id="viz-gal"></div>
+      </div>
+    </section>
+
+    <!-- ===== RESOURCES ===== -->
+    <section class="screen" id="s-resources">
+      <div class="wrap">
+        <h2 class="sec-title">Resources</h2>
+        <div id="res-list"></div>
       </div>
     </section>
 
@@ -331,6 +339,12 @@
     {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:true,  gaps:true,  viz:[]},
   ];
 
+  // Resources page — reference material beyond the weekly slides.
+  // Add {title, href, dlname} to list a new resource.
+  const RESOURCES = [
+    { title: "Lecture Notes", href: "resources/cs1-lecture-notes.pdf", dlname: "CS301-lecture-notes.pdf" },
+  ];
+
   // builds one Slides/Slides-gaps button; falls back gracefully when a file isn't posted yet
   function dlBtn(label, avail, href, dlname){
     return avail
@@ -345,7 +359,7 @@
     const pad=String(w.n).padStart(2,'0');
     r.innerHTML=`
       <div class="num">${pad}</div>
-      <div class="topic"><div class="tt">${w.t}</div><div class="date">LECTURE · ${w.date.toUpperCase()}, ${YEAR}</div></div>
+      <div class="topic"><div class="tt">${w.t}</div><div class="date">Exercise · ${w.date.toUpperCase()}, ${YEAR}</div></div>
       <div class="act">
         ${dlBtn('Slides', w.ex, 'slides/week-'+pad+'-exercise.pdf', 'CS301-week-'+pad+'-exercise.pdf')}
         ${dlBtn('Slides gaps', w.gaps, 'slides/week-'+pad+'-exercise-gaps.pdf', 'CS301-week-'+pad+'-exercise-gaps.pdf')}
@@ -365,6 +379,16 @@
     c.addEventListener('click',()=>openViz(v,w));
     vg.appendChild(c);
   }));
+
+  // ---- resources ----
+  const rl=document.getElementById('res-list');
+  RESOURCES.forEach(r=>{
+    const row=document.createElement('div'); row.className='row';
+    row.innerHTML=`
+      <div class="topic"><div class="tt">${r.title}</div></div>
+      <div class="act">${dlBtn('Download', true, r.href, r.dlname)}</div>`;
+    rl.appendChild(row);
+  });
 
   // ---- navigation ----
   const nav=document.getElementById('nav');
@@ -453,16 +477,16 @@
     ctx.fillStyle='color-mix(in srgb,'+accent+' 10%, transparent)';
     ctx.fillRect(padL, Y(1.02), pw, Y(0.98)-Y(1.02));
     // grid + y labels
-    ctx.strokeStyle='#e9e7df'; ctx.lineWidth=1; ctx.fillStyle='#a3a296';
+    ctx.strokeStyle='#dde3e5'; ctx.lineWidth=1; ctx.fillStyle='#8b9497';
     ctx.font='10px IBM Plex Mono, monospace'; ctx.textAlign='right'; ctx.textBaseline='middle';
     const yticks=[0,0.5,1,1.5,2].filter(v=>v<=ymax+0.001);
     yticks.forEach(v=>{ const yy=Y(v); ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(w-padR,yy); ctx.stroke(); ctx.fillText(v.toFixed(1), padL-7, yy); });
     // reference line y=1
-    ctx.strokeStyle='#a3a296'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(padL,Y(1)); ctx.lineTo(w-padR,Y(1)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle='#8b9497'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(padL,Y(1)); ctx.lineTo(w-padR,Y(1)); ctx.stroke(); ctx.setLineDash([]);
     // x ticks
     ctx.textAlign='center'; ctx.textBaseline='top';
     const xstep = T<=8?2: T<=20?5:10;
-    for(let t=0;t<=T+0.001;t+=xstep){ const xx=X(t); ctx.strokeStyle='#efeee6'; ctx.beginPath(); ctx.moveTo(xx,padT); ctx.lineTo(xx,padT+ph); ctx.stroke(); ctx.fillStyle='#a3a296'; ctx.fillText(t+'s', xx, padT+ph+6); }
+    for(let t=0;t<=T+0.001;t+=xstep){ const xx=X(t); ctx.strokeStyle='#e3e9eb'; ctx.beginPath(); ctx.moveTo(xx,padT); ctx.lineTo(xx,padT+ph); ctx.stroke(); ctx.fillStyle='#8b9497'; ctx.fillText(t+'s', xx, padT+ph+6); }
     // curve
     ctx.strokeStyle=accent; ctx.lineWidth=2.4; ctx.beginPath();
     for(let i=0;i<ys.length;i++){ const xx=X(ts[i]), yy=Y(ys[i]); i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy); }
@@ -481,10 +505,10 @@
     const sx=v=> cx + (v/range)*(w*0.66);
     const sy=v=> cy - (v/range)*(h*0.42);
     // axes
-    ctx.strokeStyle='#dedcd2'; ctx.lineWidth=1;
+    ctx.strokeStyle='#d1d8da'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(w,cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,h); ctx.stroke();
-    ctx.fillStyle='#a3a296'; ctx.font='9px IBM Plex Mono, monospace';
+    ctx.fillStyle='#8b9497'; ctx.font='9px IBM Plex Mono, monospace';
     ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillText('Re', w-4, cy+4);
     ctx.textAlign='left'; ctx.fillText('Im', cx+4, 3);
     // poles
@@ -644,10 +668,10 @@
     const range=maxAbs*1.25;
     const cx=w*0.6, cy=h/2, scX=(w*0.42)/range, scY=(h*0.42)/range;
     const sx=v=>cx+v*scX, sy=v=>cy-v*scY;
-    ctx.strokeStyle='#dedcd2'; ctx.lineWidth=1;
+    ctx.strokeStyle='#d1d8da'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(w,cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,h); ctx.stroke();
-    ctx.fillStyle='#a3a296'; ctx.font='9px IBM Plex Mono, monospace';
+    ctx.fillStyle='#8b9497'; ctx.font='9px IBM Plex Mono, monospace';
     ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillText('Re', w-4, cy+4);
     ctx.textAlign='left'; ctx.fillText('Im', cx+4, 3);
     function arrow(x1,y1,x2,y2,color,dash){
@@ -662,10 +686,10 @@
     const jx=sx(0), jy=sy(omega);
     zVecs.forEach(v=>arrow(sx(v.re),sy(v.im),jx,jy,inkSoft,false));
     pVecs.forEach(v=>arrow(sx(v.re),sy(v.im),jx,jy,accent,true));
-    zVecs.forEach(v=>{ ctx.beginPath(); ctx.arc(sx(v.re),sy(v.im),5,0,7); ctx.strokeStyle='#26261f'; ctx.lineWidth=1.8; ctx.stroke(); });
+    zVecs.forEach(v=>{ ctx.beginPath(); ctx.arc(sx(v.re),sy(v.im),5,0,7); ctx.strokeStyle='#1d2326'; ctx.lineWidth=1.8; ctx.stroke(); });
     pVecs.forEach(v=>{ const x=sx(v.re),y=sy(v.im),r=5; ctx.strokeStyle=accent; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y+r); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y+r); ctx.stroke(); });
     ctx.fillStyle=accent; ctx.beginPath(); ctx.arc(jx,jy,5.5,0,7); ctx.fill();
-    ctx.fillStyle='#26261f'; ctx.font='10px IBM Plex Mono, monospace'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+    ctx.fillStyle='#1d2326'; ctx.font='10px IBM Plex Mono, monospace'; ctx.textAlign='left'; ctx.textBaseline='bottom';
     ctx.fillText('jω', jx+9, jy-5);
   }
 
@@ -678,7 +702,7 @@
     const T=Math.min(40, Math.max(6, 4*Math.PI/omega));
     const amp=Math.max(1,magnitude)*1.25;
     const X=t=>padL+(t/T)*pw, Y=y=>padT+ph/2-(y/amp)*(ph/2);
-    ctx.strokeStyle='#efeee6'; ctx.lineWidth=1; ctx.fillStyle='#a3a296'; ctx.font='10px IBM Plex Mono, monospace';
+    ctx.strokeStyle='#e3e9eb'; ctx.lineWidth=1; ctx.fillStyle='#8b9497'; ctx.font='10px IBM Plex Mono, monospace';
     ctx.beginPath(); ctx.moveTo(padL,Y(0)); ctx.lineTo(w-padR,Y(0)); ctx.stroke();
     const n=400;
     ctx.strokeStyle=inkSoft; ctx.setLineDash([5,4]); ctx.lineWidth=1.8; ctx.beginPath();
