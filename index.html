@@ -176,7 +176,7 @@
     <nav class="main" id="nav">
       <span class="cur" data-screen="weeks">weeks</span>
       <span data-screen="viz">visualisations</span>
-      <span data-screen="resources">resources</span>
+      <span data-screen="material">additional material</span>
     </nav>
 
     <!-- ===== WEEKS ===== -->
@@ -195,10 +195,10 @@
       </div>
     </section>
 
-    <!-- ===== RESOURCES ===== -->
-    <section class="screen" id="s-resources">
+    <!-- ===== ADDITIONAL MATERIAL ===== -->
+    <section class="screen" id="s-material">
       <div class="wrap">
-        <h2 class="sec-title">Resources</h2>
+        <h2 class="sec-title">Additional material</h2>
         <div id="res-list"></div>
       </div>
     </section>
@@ -324,25 +324,26 @@
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
-    {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:true,  gaps:true,  viz:[]},
-    {n:2,  t:"Modeling",                           date:"Sep 25", ex:true,  gaps:true,  viz:[]},
-    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:true,  gaps:true,  viz:[]},
-    {n:4,  t:"Time Response",                      date:"Oct 9",  ex:true,  gaps:true,  viz:[]},
-    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:true,  gaps:true,  viz:[{k:"tfgeom", label:"Transfer function: magnitude & phase", live:true}]},
-    {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:true,  gaps:true,  viz:[]},
-    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:true,  gaps:false, viz:[]},
-    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:true,  gaps:true,  viz:[{k:"step2", label:"Second-order step response", live:true}]},
-    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:true,  gaps:true,  viz:[]},
-    {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:true,  gaps:true,  viz:[]},
-    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:true,  gaps:true,  viz:[]},
-    {n:12, t:"Time Delays",                        date:"Dec 4",  ex:true,  gaps:true,  viz:[]},
-    {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:true,  gaps:true,  viz:[]},
+    {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:false, gaps:false, viz:[]},
+    {n:2,  t:"Modeling",                           date:"Sep 25", ex:false, gaps:false, viz:[]},
+    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:false, gaps:false, viz:[]},
+    {n:4,  t:"Time Response",                      date:"Oct 9",  ex:false, gaps:false, viz:[]},
+    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, viz:[]},
+    {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, gaps:false, viz:[]},
+    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, viz:[]},
+    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, viz:[]},
+    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, viz:[]},
+    {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, gaps:false, viz:[]},
+    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:false, gaps:false, viz:[]},
+    {n:12, t:"Time Delays",                        date:"Dec 4",  ex:false, gaps:false, viz:[]},
+    {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:false, gaps:false, viz:[]},
   ];
 
-  // Resources page — reference material beyond the weekly slides.
+  // Additional material page — reference material beyond the weekly slides.
   // Add {title, href, dlname} to list a new resource.
   const RESOURCES = [
     { title: "Lecture Notes", href: "resources/cs1-lecture-notes.pdf", dlname: "CS301-lecture-notes.pdf" },
+    { title: "Summary Sheet", href: "resources/summary_sheet.pdf", dlname: "CS301-summary-sheet.pdf" },
   ];
 
   // builds one Slides/Slides-gaps button; falls back gracefully when a file isn't posted yet
