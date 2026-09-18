@@ -162,7 +162,7 @@
   @media(max-width:520px){
     .gal{ grid-template-columns:1fr; }
     .row{ flex-wrap:wrap; row-gap:12px; }
-    .row .act{ width:100%; padding-left:48px; }
+    .row .act{ width:100%; padding-left:48px; flex-wrap:wrap; row-gap:10px; }
   }
 </style>
 </head>
@@ -318,25 +318,28 @@
      • Gaps handout: save as  slides/week-05-exercise-gaps.pdf  and set
        gaps:true  to light up its "Slides gaps" button. Independent of
        ex — a week can have one file without the other.
+     • Filled-in slides (my worked copy): save as
+       slides/week-05-exercise-filled.pdf  and set  filled:true  to light
+       up its "Slides filled" button. Independent of ex/gaps.
      • Visualisations live on the Visualisations page, not per week —
        add {k:"unique-key", label:"Name"} to a week's viz[] there and
        set  live:true  once the demo is built.
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
-    {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:false, gaps:false, viz:[]},
-    {n:2,  t:"Modeling",                           date:"Sep 25", ex:false, gaps:false, viz:[]},
-    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:false, gaps:false, viz:[]},
-    {n:4,  t:"Time Response",                      date:"Oct 9",  ex:false, gaps:false, viz:[]},
-    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, viz:[]},
-    {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, gaps:false, viz:[]},
-    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, viz:[]},
-    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, viz:[]},
-    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, viz:[]},
-    {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, gaps:false, viz:[]},
-    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:false, gaps:false, viz:[]},
-    {n:12, t:"Time Delays",                        date:"Dec 4",  ex:false, gaps:false, viz:[]},
-    {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:false, gaps:false, viz:[]},
+    {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:false, gaps:false, filled:false, viz:[]},
+    {n:2,  t:"Modeling",                           date:"Sep 25", ex:false, gaps:false, filled:false, viz:[]},
+    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:false, gaps:false, filled:false, viz:[]},
+    {n:4,  t:"Time Response",                      date:"Oct 9",  ex:false, gaps:false, filled:false, viz:[]},
+    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, filled:false, viz:[]},
+    {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, gaps:false, filled:false, viz:[]},
+    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, filled:false, viz:[]},
+    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, filled:false, viz:[]},
+    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, filled:false, viz:[]},
+    {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, gaps:false, filled:false, viz:[]},
+    {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:false, gaps:false, filled:false, viz:[]},
+    {n:12, t:"Time Delays",                        date:"Dec 4",  ex:false, gaps:false, filled:false, viz:[]},
+    {n:13, t:"Nonlinearities",                     date:"Dec 11", ex:false, gaps:false, filled:false, viz:[]},
   ];
 
   // Additional material page — reference material beyond the weekly slides.
@@ -364,6 +367,7 @@
       <div class="act">
         ${dlBtn('Slides', w.ex, 'slides/week-'+pad+'-exercise.pdf', 'CS301-week-'+pad+'-exercise.pdf')}
         ${dlBtn('Slides gaps', w.gaps, 'slides/week-'+pad+'-exercise-gaps.pdf', 'CS301-week-'+pad+'-exercise-gaps.pdf')}
+        ${dlBtn('Slides filled', w.filled, 'slides/week-'+pad+'-exercise-filled.pdf', 'CS301-week-'+pad+'-exercise-filled.pdf')}
       </div>`;
     wl.appendChild(r);
   });
