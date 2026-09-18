@@ -18,15 +18,36 @@ needed. To use a custom domain later, add it under Settings → Pages.
 
 All content lives in the `WEEKS` array near the top of the `<script>` block
 in `index.html` (look for the **EDITING GUIDE** comment). Each week is a row
-with two buttons, "Slides" and "Slides gaps" — there are no per-week pages
-and no problem sets for now.
+with three buttons — "Slides", "Slides gaps", "Slides filled" — each backed
+by its own flag (`ex`, `gaps`, `filled`) and its own PDF, so any subset can
+go live independently (e.g. post slides + gaps on Monday, filled slides
+after the exercise session). There are no per-week pages and no problem
+sets for now.
+
+No build step: everything is static HTML/PDF/JS, so posting material is
+just "add the file → flip a flag → commit & push". You don't need Claude
+for this — any editor and `git` work fine.
 
 ### Posting slides
-1. Export your slides to PDF, plus the gaps/handout version.
-2. Save them as `slides/week-05-exercise.pdf` and
-   `slides/week-05-exercise-gaps.pdf` (two-digit week number).
-3. In `index.html`, set `ex:true` on that week.
-4. Commit & push. Both of the week's buttons activate automatically.
+1. Export your slides to PDF (and the gaps/handout and/or filled-in
+   version, if you have them).
+2. Save them into `slides/`, named by two-digit week number:
+   - `slides/week-05-exercise.pdf` → lights up "Slides"
+   - `slides/week-05-exercise-gaps.pdf` → lights up "Slides gaps"
+   - `slides/week-05-exercise-filled.pdf` → lights up "Slides filled"
+3. In `index.html`, set the matching flag(s) — `ex:true`, `gaps:true`,
+   `filled:true` — to `true` on that week's entry in `WEEKS`.
+4. Commit & push. Only the buttons whose file + flag are both set turn on;
+   the rest stay dim automatically. See `slides/README.md` for the
+   filename cheat sheet.
+
+### Posting additional material (lecture notes, summary sheets, ...)
+This is the "Additional material" page, backed by the `RESOURCES` array
+right below `WEEKS` in `index.html`.
+1. Save the file into `resources/`.
+2. Add `{ title: "...", href: "resources/your-file.pdf", dlname: "..." }`
+   to `RESOURCES`.
+3. Commit & push. See `resources/README.md`.
 
 ### Adding a visualisation
 Visualisations live only on the Visualisations page/gallery, not per week.
@@ -40,5 +61,5 @@ Visualisations live only on the Visualisations page/gallery, not per week.
 | File | Purpose |
 |------|---------|
 | `index.html` | The whole site. Edit content arrays here. |
-| `slides/` | Drop weekly `week-NN-exercise.pdf` / `week-NN-exercise-gaps.pdf` files here. |
-| `Control Systems TA Site.html` | Design reference (accent/font explorer) — not deployed. |
+| `slides/` | Weekly `week-NN-exercise[-gaps\|-filled].pdf` files. |
+| `resources/` | Files listed on the "Additional material" page. |
