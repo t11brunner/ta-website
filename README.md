@@ -18,25 +18,22 @@ needed. To use a custom domain later, add it under Settings → Pages.
 
 All content lives in the `WEEKS` array near the top of the `<script>` block
 in `index.html` (look for the **EDITING GUIDE** comment). Each week is a row
-with three buttons — "Slides", "Slides gaps", "Slides filled" — each backed
-by its own flag (`ex`, `gaps`, `filled`) and its own PDF, so any subset can
-go live independently (e.g. post slides + gaps on Monday, filled slides
-after the exercise session). There are no per-week pages and no problem
-sets for now.
+with two buttons — "Slides", "Slides gaps" — each backed by its own flag
+(`ex`, `gaps`) and its own PDF, so either can go live independently (e.g.
+post slides first, add the gaps handout later). There are no per-week
+pages and no problem sets for now.
 
 No build step: everything is static HTML/PDF/JS, so posting material is
 just "add the file → flip a flag → commit & push". You don't need Claude
 for this — any editor and `git` work fine.
 
 ### Posting slides
-1. Export your slides to PDF (and the gaps/handout and/or filled-in
-   version, if you have them).
+1. Export your slides to PDF (and the gaps/handout version, if you have it).
 2. Save them into `slides/`, named by two-digit week number:
    - `slides/week-05-exercise.pdf` → lights up "Slides"
    - `slides/week-05-exercise-gaps.pdf` → lights up "Slides gaps"
-   - `slides/week-05-exercise-filled.pdf` → lights up "Slides filled"
-3. In `index.html`, set the matching flag(s) — `ex:true`, `gaps:true`,
-   `filled:true` — to `true` on that week's entry in `WEEKS`.
+3. In `index.html`, set the matching flag(s) — `ex:true`, `gaps:true` —
+   to `true` on that week's entry in `WEEKS`.
 4. Commit & push. Only the buttons whose file + flag are both set turn on;
    the rest stay dim automatically. See `slides/README.md` for the
    filename cheat sheet.
@@ -61,5 +58,5 @@ Visualisations live only on the Visualisations page/gallery, not per week.
 | File | Purpose |
 |------|---------|
 | `index.html` | The whole site. Edit content arrays here. |
-| `slides/` | Weekly `week-NN-exercise[-gaps\|-filled].pdf` files. |
+| `slides/` | Weekly `week-NN-exercise[-gaps].pdf` files. |
 | `resources/` | Files listed on the "Additional material" page. |
