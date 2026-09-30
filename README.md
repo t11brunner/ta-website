@@ -46,6 +46,14 @@ right below `WEEKS` in `index.html`.
    to `RESOURCES`.
 3. Commit & push. See `resources/README.md`.
 
+### Editing the week 3 pendulum demo
+This one demo is a React app bundled to a single file, unlike the rest of the
+site. Source: `viz-src/pendulum-linearization/` (physics in `src/physics.ts`,
+UI in `src/App.tsx`). The site loads the bundled output `viz/week-03-pendulum.html`
+in an iframe. To change it: edit the source, run the `web-artifacts-builder`
+skill's `bundle-artifact.sh` from that folder, copy `bundle.html` to
+`viz/week-03-pendulum.html`, commit. `node_modules/` and `dist/` are git-ignored.
+
 ### Adding a visualisation
 Visualisations live only on the Visualisations page/gallery, not per week.
 1. Add `{k:"unique-key", label:"Demo name"}` to that week's `viz:[ ]`.

@@ -299,6 +299,10 @@
             <p>A complex-conjugate pair of poles or zeros always contributes two vectors, one from each partner — together they set both the magnitude and the phase, which is why complex poles bend a response in ways a single real pole cannot.</p>
           </div>
         </div>
+        <div id="vd-embed" style="display:none;">
+          <p class="sec-note" style="margin-bottom:24px; max-width:72ch;">Near an equilibrium a nonlinear system behaves like its linearization. Pick an equilibrium of the pendulum, release it from a chosen deviation, and compare the nonlinear response with the linearized one in the phase portrait, the time response and the animation.</p>
+          <iframe id="vd-frame" title="Pendulum linearization" loading="lazy" style="width:100%; height:1150px; border:0; display:block;"></iframe>
+        </div>
         <div id="vd-soon" style="display:none;">
           <div class="ph" style="height:280px;">visualisation in development — coming during the semester</div>
           <p class="sec-note" style="margin-top:22px;">This demo will be built using the same interactive template as the second-order step response. Check back when the relevant week goes live.</p>
@@ -326,7 +330,7 @@
   const WEEKS = [
     {n:1,  t:"Introduction & Orientation",         date:"Sep 18", ex:true,  gaps:true,  viz:[]},
     {n:2,  t:"Modeling",                           date:"Sep 25", ex:true,  gaps:true,  viz:[]},
-    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:false, gaps:false, viz:[]},
+    {n:3,  t:"Linearization",                      date:"Oct 2",  ex:false, gaps:false, viz:[{k:"pendulum-lin", label:"Pendulum linearization", live:true, src:"viz/week-03-pendulum.html"}]},
     {n:4,  t:"Time Response",                      date:"Oct 9",  ex:false, gaps:false, viz:[]},
     {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, viz:[]},
     {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, gaps:false, viz:[]},
@@ -399,14 +403,27 @@
   nav.addEventListener('click',e=>{ const s=e.target.closest('span'); if(s) show(s.dataset.screen); });
   document.getElementById('back-viz').addEventListener('click',()=>show('viz'));
 
+  // embedded demos report their content height so the iframe can fit them
+  window.addEventListener('message',e=>{
+    const fr=document.getElementById('vd-frame');
+    if(e.source===fr.contentWindow && e.data && e.data.type==='viz-height') fr.style.height=e.data.height+'px';
+  });
+
   function openViz(v,w){
     document.getElementById('vd-eyebrow').textContent='WEEK '+String(w.n).padStart(2,'0')+' · VISUALISATION';
     document.getElementById('vd-title').textContent=v.label;
     const isStep = v.k==='step2';
     const isTF = v.k==='tfgeom';
+    const isEmbed = !!v.src;
     document.getElementById('vd-live').style.display = isStep?'block':'none';
     document.getElementById('vd-tf').style.display = isTF?'block':'none';
-    document.getElementById('vd-soon').style.display = (isStep||isTF)?'none':'block';
+    document.getElementById('vd-embed').style.display = isEmbed?'block':'none';
+    document.getElementById('vd-soon').style.display = (isStep||isTF||isEmbed)?'none':'block';
+    if(isEmbed){
+      // set the src only once the demo is opened, so the gallery never loads it
+      const fr=document.getElementById('vd-frame');
+      if(fr.getAttribute('src')!==v.src) fr.setAttribute('src', v.src);
+    }
     showScreen('s-viz-detail'); setNav('viz');
     if(isStep){ requestAnimationFrame(()=>{ sizeCanvases(); render(); }); }
     if(isTF){ requestAnimationFrame(()=>{ tfSizeCanvases(); tfUpdateAll(); }); }
