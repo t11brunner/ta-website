@@ -388,15 +388,14 @@ export default function BoxTab() {
               onChange={(kk) => { setInputKey(kk); setGhost(null); setT(0) }}
             />
           </Ctrl>
-          {open ? (
-            <Ctrl name={<>Sensor &nbsp;<em>h</em></>}>
-              <Pills
-                items={plant.sensors.map((s) => ({ key: s.key, label: s.label }))}
-                value={sensor.key}
-                onChange={changeSensor}
-              />
-            </Ctrl>
-          ) : (
+          <Ctrl name={<>Sensor &nbsp;<em>h</em></>}>
+            <Pills
+              items={plant.sensors.map((s) => ({ key: s.key, label: s.label }))}
+              value={sensor.key}
+              onChange={changeSensor}
+            />
+          </Ctrl>
+          {!open && (
             <Ctrl name="Inside the box">
               <div className="row-btns">
                 <button className="btn acc" onClick={shakeHidden}>Change something inside</button>
@@ -435,7 +434,7 @@ export default function BoxTab() {
             <span className="lbl">Output</span>
             <span className="right">
               <span className="legend">
-                <span><i className="sw acc" />y(t){open ? ` · ${sensor.label.toLowerCase()}` : ''}</span>
+                <span><i className="sw acc" />y(t) · {sensor.label.toLowerCase()}</span>
                 {ghost && <span><i className="sw ghost" />{ghost.what}</span>}
               </span>
               <PlayToggle playing={playing} setPlaying={setPlaying} />
