@@ -54,6 +54,16 @@ in an iframe. To change it: edit the source, run the `web-artifacts-builder`
 skill's `bundle-artifact.sh` from that folder, copy `bundle.html` to
 `viz/week-03-pendulum.html`, commit. `node_modules/` and `dist/` are git-ignored.
 
+### Editing the week 3 states-and-sensors demo
+Same setup as the pendulum demo. Source: `viz-src/states-sensors/`
+(car and pendulum models with their sensors in `src/sim.ts`, UI in
+`src/BoxTab.tsx`). Build from that folder
+(`parcel build index.html --dist-dir dist --no-source-maps`, then
+`html-inline dist/index.html > bundle.html`, or the skill's
+`bundle-artifact.sh`), copy `bundle.html` to
+`viz/week-03-states-sensors.html`, commit. The intro text above an embedded
+demo comes from the `note` field of its entry in `WEEKS`.
+
 ### Adding a visualisation
 Visualisations live only on the Visualisations page/gallery, not per week.
 1. Add `{k:"unique-key", label:"Demo name"}` to that week's `viz:[ ]`.
