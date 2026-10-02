@@ -53,6 +53,15 @@ function Legend() {
   )
 }
 
+/** Small play/pause pill for the header of every animated plot. */
+function PlayToggle(props: { playing: boolean; setPlaying: (p: boolean) => void }) {
+  return (
+    <button className={'play' + (props.playing ? '' : ' paused')} onClick={() => props.setPlaying(!props.playing)}>
+      {props.playing ? 'Pause' : 'Play'}
+    </button>
+  )
+}
+
 function Slider(props: {
   name: React.ReactNode
   value: string
@@ -419,14 +428,14 @@ export default function App() {
         <div className="plot-wrap">
           <div className="plot-title">
             <span>Phase portrait · <span className="math">(δ, δ̇)</span></span>
-            <Legend />
+            <span className="right"><Legend /><PlayToggle playing={playing} setPlaying={setPlaying} /></span>
           </div>
           <Canvas height={340} draw={drawPhase} onPointer={onPhasePointer} cursor="crosshair" />
           <div className="plot-foot">Arrows show the direction of motion at each state. Click or drag to set the initial state.</div>
         </div>
         <div className="side-col">
           <div className="plot-wrap">
-            <div className="plot-title"><span>Pendulum</span></div>
+            <div className="plot-title"><span>Pendulum</span><PlayToggle playing={playing} setPlaying={setPlaying} /></div>
             <Canvas height={290} draw={drawPendulum} />
           </div>
           <div className="readouts">
@@ -449,7 +458,7 @@ export default function App() {
       <div className="plot-wrap wide-plot">
         <div className="plot-title">
           <span>Response · <span className="math">δ(t) = θ(t) − θₑ</span></span>
-          <Legend />
+          <span className="right"><Legend /><PlayToggle playing={playing} setPlaying={setPlaying} /></span>
         </div>
         <Canvas height={230} draw={drawTime} />
       </div>

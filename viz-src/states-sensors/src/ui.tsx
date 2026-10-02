@@ -98,3 +98,12 @@ export function Transport(props: { t: number; playing: boolean; setPlaying: (p: 
     </div>
   )
 }
+
+/** Small play/pause pill for the header of every animated plot. */
+export function PlayToggle(props: { playing: boolean; setPlaying: (p: boolean) => void }) {
+  return (
+    <button className={'play' + (props.playing ? '' : ' paused')} onClick={() => props.setPlaying(!props.playing)}>
+      {props.playing ? 'Pause' : 'Play'}
+    </button>
+  )
+}

@@ -25,6 +25,11 @@ body { color: var(--ink); font-family: var(--f-head); -webkit-font-smoothing: an
 
 .plot-wrap { border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 16px 18px 10px; }
 .plot-title { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--f-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 6px; }
+.plot-title { align-items: center; }
+.plot-title .right { display: inline-flex; align-items: center; gap: 14px; }
+.play { cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--mute); font-family: var(--f-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; line-height: 1; padding: 5px 11px; border-radius: 999px; transition: color .14s, background .14s, border-color .14s; }
+.play:hover { color: var(--ink); }
+.play.paused { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
 .plot-foot { font-family: var(--f-mono); font-size: 11px; color: var(--mute); padding: 4px 0 6px; }
 .wide-plot { margin-bottom: 30px; }
 

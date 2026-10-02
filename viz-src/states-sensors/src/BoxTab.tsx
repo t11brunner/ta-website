@@ -5,7 +5,7 @@ import {
   arrow, arrowHead, cursorLine, dot, fmt, frame, plotSeries, rangeOf, sample,
 } from './plot'
 import { DT, N_PLANT, PLANTS, simulatePlant, type Plant, type PlantKey, type Sensor } from './sim'
-import { Ctrl, Pills, Slider, Transport, useClock } from './ui'
+import { Ctrl, Pills, PlayToggle, Slider, Transport, useClock } from './ui'
 
 type Mode = 'closed' | 'open'
 
@@ -362,6 +362,7 @@ export default function BoxTab() {
         <div className="plot-wrap">
           <div className="plot-title">
             <span className="lbl">{open ? `${plant.label} · inside the box` : 'Black box'}</span>
+            {open && <PlayToggle playing={playing} setPlaying={setPlaying} />}
           </div>
           {open ? <Canvas height={230} draw={drawScene} /> : <ClosedBox />}
         </div>
@@ -410,12 +411,19 @@ export default function BoxTab() {
 
       <div className="stack">
         <div className="plot-wrap">
+          <div className="plot-title"><span className="lbl">Input</span><PlayToggle playing={playing} setPlaying={setPlaying} /></div>
           <Canvas height={150} draw={drawU} />
         </div>
         {open ? (
           <div className="two" style={{ marginBottom: 0 }}>
-            <div className="plot-wrap"><Canvas height={150} draw={drawX(0)} /></div>
-            <div className="plot-wrap"><Canvas height={150} draw={drawX(1)} /></div>
+            <div className="plot-wrap">
+              <div className="plot-title"><span className="lbl">State <span className="math">x₁</span></span><PlayToggle playing={playing} setPlaying={setPlaying} /></div>
+              <Canvas height={150} draw={drawX(0)} />
+            </div>
+            <div className="plot-wrap">
+              <div className="plot-title"><span className="lbl">State <span className="math">x₂</span></span><PlayToggle playing={playing} setPlaying={setPlaying} /></div>
+              <Canvas height={150} draw={drawX(1)} />
+            </div>
           </div>
         ) : (
           <div className="hatch" style={{ height: 120 }}>
@@ -424,10 +432,13 @@ export default function BoxTab() {
         )}
         <div className="plot-wrap">
           <div className="plot-title">
-            <span />
-            <span className="legend">
-              <span><i className="sw acc" />y(t){open ? ` · ${sensor.label.toLowerCase()}` : ''}</span>
-              {ghost && <span><i className="sw ghost" />{ghost.what}</span>}
+            <span className="lbl">Output</span>
+            <span className="right">
+              <span className="legend">
+                <span><i className="sw acc" />y(t){open ? ` · ${sensor.label.toLowerCase()}` : ''}</span>
+                {ghost && <span><i className="sw ghost" />{ghost.what}</span>}
+              </span>
+              <PlayToggle playing={playing} setPlaying={setPlaying} />
             </span>
           </div>
           <Canvas height={170} draw={drawY} />
