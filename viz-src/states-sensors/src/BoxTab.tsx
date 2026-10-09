@@ -305,7 +305,8 @@ export default function BoxTab() {
   }
   const changeSensor = (sk: string) => {
     if (sk === sensor.key) return
-    keepGhost(`previous sensor: ${sensor.label.toLowerCase()}`)
+    // every sensor has a different unit, so an old curve can't share the new y-axis
+    setGhost(null)
     setSensorKey(sk)
   }
   const changeX0 = (i: 0 | 1, v: number) => {
@@ -316,9 +317,26 @@ export default function BoxTab() {
     keepGhost('before the change inside')
     const [[a0, a1], [b0, b1]] = plant.x0Range
     const r = (lo: number, hi: number) => Math.round((lo + Math.random() * (hi - lo)) * 10) / 10
-    let nx: [number, number]
-    do nx = [r(a0 * 0.6, a1 * 0.6), r(b0 * 0.6, b1 * 0.6)]
-    while (Math.abs(nx[0] - x0[0]) + Math.abs(nx[1] - x0[1]) < 0.4)
+    // Pick a new hidden state whose effect is visible in the current output. Not every
+    // change is: with the car's speedometer or accelerometer, a different start
+    // position gives exactly the same y.
+    const [lo, hi] = rangeOf([sim.y], [0], 0.5)
+    const effect = (cand: [number, number]) => {
+      const y = simulatePlant(plant, input.fn, cand, sensor).y
+      let d = 0
+      for (let i = 0; i <= N_PLANT; i++) d = Math.max(d, Math.abs(y[i] - sim.y[i]))
+      return d
+    }
+    // take the first clearly visible candidate, otherwise the most visible one tried
+    let nx: [number, number] = x0
+    let best = -1
+    for (let tries = 0; tries < 200; tries++) {
+      const cand: [number, number] = [r(a0 * 0.6, a1 * 0.6), r(b0 * 0.6, b1 * 0.6)]
+      if (Math.abs(cand[0] - x0[0]) + Math.abs(cand[1] - x0[1]) < 0.4) continue
+      const d = effect(cand)
+      if (d > best) { best = d; nx = cand }
+      if (d > 0.12 * (hi - lo)) break
+    }
     setX0(nx)
     setT(0)
     setPlaying(true)
