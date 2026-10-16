@@ -1,0 +1,22 @@
+{
+  "name": "transfer-functions",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "parcel conv.html sine.html est.html",
+    "typecheck": "tsc -p tsconfig.app.json",
+    "build": "sh build.sh"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "html-inline": "^1.2.0",
+    "parcel": "^2.16.4",
+    "typescript": "~6.0.2"
+  }
+}

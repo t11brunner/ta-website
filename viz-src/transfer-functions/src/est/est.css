@@ -1,0 +1,82 @@
+/* s-domain demo: everything in the s-plane sits on dark slate panels,
+   everything over time on the usual light cards. */
+:root {
+  --slate: oklch(0.255 0.026 248);
+  --slate-2: oklch(0.31 0.026 248);
+  --on-slate: rgba(236, 241, 244, 0.92);
+  --on-slate-soft: rgba(222, 230, 235, 0.6);
+  --dark-acc: oklch(0.79 0.1 245);
+  --dark-amber: oklch(0.81 0.12 75);
+  --amber: oklch(0.64 0.13 62);
+  --amber-soft: oklch(0.75 0.13 70 / 0.16);
+}
+
+.plot-wrap.dark { background: var(--slate); border-color: var(--slate); color: var(--on-slate); }
+.plot-wrap.dark .lbl,
+.plot-wrap.dark .legend,
+.plot-wrap.dark .plot-foot { color: var(--on-slate-soft); }
+.plot-wrap.dark .math,
+.plot-wrap.dark .fx { color: var(--on-slate); }
+.plot-wrap.dark .sw { border-top-color: var(--on-slate); }
+.plot-wrap.dark .sw.acc { border-top-color: var(--dark-acc); }
+.plot-wrap.dark .sw.amb { border-top-color: var(--dark-amber); }
+.plot-wrap.dark .fx { font-size: 15px; }
+
+/* formulas inside uppercase eyebrow labels and table heads keep their case */
+.lbl i, .lbl .fx, .ledger th i { text-transform: none; letter-spacing: 0; }
+.plot-title .fx { font-size: 15px; font-weight: 400; color: var(--ink); }
+/* legend entries are flex rows: keep a formula in one piece */
+.legend .t { display: inline; }
+
+/* legend marks: × for poles, a dot for s */
+.mk { font-style: normal; font-weight: 600; font-size: 14px; line-height: 1; }
+.mk.w { color: var(--on-slate); }
+.mk.amb { color: var(--dark-amber); }
+.mk.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--on-slate); box-shadow: 0 0 0 4px rgba(233, 238, 241, 0.16); }
+
+.sw.amb { border-top-color: var(--amber); }
+.sw.band { height: 7px; border: 0; background: var(--line); border-radius: 4px; }
+.sw.thin { border-top-width: 1px; }
+.sw.dash.acc { border-top: 2px dashed var(--accent); }
+.sw.dash.ink { border-top: 2px dashed var(--ink); }
+.sw.fill.amb { height: 10px; border: 0; background: oklch(0.75 0.13 70 / 0.4); border-radius: 2px; }
+.amb-t { color: var(--amber); }
+
+.est-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; align-items: stretch; }
+.est-row.hero { grid-template-columns: 1.08fr 1fr; align-items: start; }
+.est-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.est-row > * { min-width: 0; }
+
+.ctrl .seg button sup, .fx sup { font-size: 0.72em; }
+
+/* the derivation: ODE → algebra */
+.deriv { display: flex; flex-direction: column; gap: 6px; }
+.deriv .step { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: baseline; }
+.deriv .step .k { font-family: var(--f-mono); font-size: 11px; color: var(--mute); }
+.deriv .fx { font-size: 16px; }
+.deriv .choice { background: var(--accent-soft); color: var(--accent); border-radius: 8px; padding: 4px 10px; width: fit-content; }
+.deriv .hint { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+
+.callout.amb { background: var(--amber-soft); }
+.callout.amb b { color: var(--amber); }
+
+/* ledger of picked-up poles */
+.ledger { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.ledger th { text-align: left; font-family: var(--f-head); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 0 12px 8px 0; border-bottom: 1px solid var(--line); }
+.ledger td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line-soft); vertical-align: baseline; }
+.ledger tr:last-child td { border-bottom: 0; }
+.ledger .fx { font-size: 15px; }
+.ledger td:first-child .fx, .ledger td:nth-child(3) .fx { white-space: nowrap; }
+.ledger .src { font-size: 12px; color: var(--ink-soft); display: block; margin-top: 2px; }
+.ledger .rest td { color: var(--ink-soft); font-style: italic; }
+.ledger-wrap { overflow-x: auto; }
+.sums { margin-top: 14px; display: flex; flex-direction: column; gap: 4px; }
+.sums .fx { font-size: 15px; }
+
+.ctrl-btn { display: flex; align-items: flex-end; gap: 12px; flex: 1 1 320px; min-width: 260px; }
+.ctrl-btn .ctrl { flex: 1; min-width: 0; }
+.ctrl-btn .btn { margin-bottom: 2px; white-space: nowrap; }
+
+@media (max-width: 860px) {
+  .est-row, .est-row.hero { grid-template-columns: 1fr; }
+}

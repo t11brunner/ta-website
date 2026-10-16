@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ta-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8766"],
+      "port": 8766
+    },
+    {
+      "name": "tf-dev",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd viz-src/transfer-functions && exec npx parcel est.html --port 1236 --dist-dir dist/dev"],
+      "port": 1236
+    }
+  ]
+}

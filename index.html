@@ -95,6 +95,27 @@
   .gcard .gstatus{ font-family:var(--f-mono); font-size:9px; margin-top:6px; letter-spacing:.04em; }
   .gstatus.live{ color:var(--accent); }
   .gstatus.soon{ color:var(--mute); }
+  /* gallery thumbnails: small inline-SVG sketches of each demo */
+  .gcard .ph.thumb{ height:140px; padding:0; display:block; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; transition:border-color .14s; }
+  .gcard:hover .ph.thumb{ border-color:var(--accent); }
+  .thumb svg{ width:100%; height:100%; display:block; }
+  .thumb text{ text-transform:none; letter-spacing:0; }
+  .thumb .ink{ fill:none; stroke:var(--ink); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  .thumb .acc{ fill:none; stroke:var(--accent); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .thumb .soft{ fill:none; stroke:var(--mute); stroke-width:1.2; stroke-dasharray:3 3; }
+  .thumb .rule{ fill:none; stroke:var(--line); stroke-width:1; }
+  .thumb .area{ fill:oklch(0.52 0.09 250 / 0.18); stroke:none; }
+  .thumb .dot-ink{ fill:var(--ink); }
+  .thumb .dot-acc{ fill:var(--accent); }
+  .thumb .box{ fill:var(--card); stroke:var(--ink); stroke-width:1.5; }
+  .thumb .lbl{ font-family:var(--f-head); font-style:italic; font-size:13px; fill:var(--ink-soft); }
+  .thumb .lbl.acc-t{ fill:var(--accent); }
+  .thumb .tag{ font-family:var(--f-mono); font-size:9.5px; letter-spacing:.04em; fill:var(--mute); }
+  .thumb .gs{ font-family:var(--f-head); font-style:italic; font-size:15px; fill:var(--ink); }
+  .thumb .redraw{ stroke-dasharray:1; stroke-dashoffset:0; }
+  .gcard:hover .thumb .redraw{ animation:thumb-draw 1.1s ease-out; }
+  @keyframes thumb-draw{ from{ stroke-dashoffset:1; } to{ stroke-dashoffset:0; } }
+  @media (prefers-reduced-motion: reduce){ .gcard:hover .thumb .redraw{ animation:none; } }
 
   /* ===== interactive viz ===== */
   .viz-detail .vlayout{ display:grid; grid-template-columns:1.7fr 1fr; gap:40px; align-items:start; margin:6px 0 8px; }
@@ -336,7 +357,13 @@
       {k:"pendulum-lin", label:"Pendulum linearization", live:true, src:"viz/week-03-pendulum.html",
        note:"Near an equilibrium a nonlinear system behaves like its linearization. Pick an equilibrium of the pendulum, release it from a chosen deviation, and compare the nonlinear response with the linearized one in the phase portrait, the time response and the animation."}]},
     {n:4,  t:"Time Response",                      date:"Oct 9",  ex:true,  gaps:true , viz:[]},
-    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, viz:[]},
+    {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, viz:[
+      {k:"tf-convolution", label:"Convolution vs multiplication", live:true, src:"viz/week-05-convolution.html",
+       note:"Why leave the time domain at all? There, every block acts through a convolution integral that has to be recomputed for every instant. In the s-domain the same block just multiplies. Watch both compute the same output, and see what happens to the cost when you chain two blocks."},
+      {k:"tf-s-domain", label:"From time to the s-plane", live:true, src:"viz/week-05-s-domain.html",
+       note:"Instead of following a signal instant by instant, take it apart into pieces e^st, one for every point s of the complex plane. Each piece passes through the system unchanged except for one complex factor G(s). That is why e^st is the standard test input, and why outputs get easy: multiply every piece by G(s), then add them back up."},
+      {k:"tf-sine-machine", label:"A machine for sinusoids", live:true, src:"viz/week-05-sine-machine.html",
+       note:"A sinusoid goes into a stable LTI system and a sinusoid of the same frequency comes out, scaled and shifted. Plug in s = jω: the length of G(jω) is the amplitude ratio, its angle the phase shift. Starts with the example from the slides, and you can type in your own G(s)."}]},
     {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, gaps:false, viz:[]},
     {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, viz:[]},
     {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, viz:[]},
@@ -376,12 +403,107 @@
     wl.appendChild(r);
   });
 
+  // ---- gallery thumbnails ----
+  // One small SVG sketch per demo key (viewBox 320×140); demos without one keep the hatched placeholder.
+  // Accent curves carry class "redraw" and pathLength=1 so they redraw on hover.
+  const f1=v=>v.toFixed(1);
+  function curve(fn, t0, t1, X, Y, n=90){
+    let d='';
+    for(let i=0;i<=n;i++){ const t=t0+(t1-t0)*i/n; d+=(i?'L':'M')+f1(X(t))+' '+f1(Y(fn(t))); }
+    return d;
+  }
+  // straight arrow with a filled head
+  function arr(x0,y0,x1,y1,cls='ink'){
+    const m=Math.hypot(x1-x0,y1-y0), ux=(x1-x0)/m, uy=(y1-y0)/m, h=6;
+    const fill=cls==='acc'?'dot-acc':'dot-ink';
+    return `<path class="${cls}" d="M${f1(x0)} ${f1(y0)}L${f1(x1-ux*h*0.7)} ${f1(y1-uy*h*0.7)}" style="stroke-width:1.4"/>`+
+      `<path class="${fill}" d="M${f1(x1)} ${f1(y1)}L${f1(x1-ux*h+uy*h*0.55)} ${f1(y1-uy*h-ux*h*0.55)}L${f1(x1-ux*h-uy*h*0.55)} ${f1(y1-uy*h+ux*h*0.55)}Z"/>`;
+  }
+  const svgWrap=inner=>`<svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${inner}</svg>`;
+
+  const THUMBS={
+    // u → box with its lid open, states inside → y
+    'states-sensors':()=>{
+      const step=curve(t=>t<0.3?0:1, 0, 1, t=>14+t*46, v=>88-v*30, 40);
+      const out=curve(t=>1-Math.exp(-0.7*t)*Math.cos(2.2*t), 0, 6, t=>244+t*11, v=>96-v*34);
+      const dial=(cx,cy,a)=>`<circle class="ink" cx="${cx}" cy="${cy}" r="10" style="stroke-width:1.2"/>`+
+        `<path class="acc" d="M${cx} ${cy}L${f1(cx+8*Math.cos(a))} ${f1(cy-8*Math.sin(a))}" style="stroke-width:1.8"/><circle class="dot-acc" cx="${cx}" cy="${cy}" r="2"/>`;
+      return svgWrap(
+        `<path class="ink" d="${step}"/><text class="lbl" x="14" y="112">u</text>`+arr(66,82,98,82)+
+        `<rect class="box" x="104" y="52" width="104" height="62" rx="5"/>`+
+        `<path class="ink" d="M104 52L146 20" style="stroke-width:1.5"/><path class="rule" d="M146 20L188 26L208 52" style="stroke-dasharray:3 3"/>`+
+        dial(128,84,2.2)+dial(156,84,0.9)+dial(184,84,1.6)+
+        `<text class="tag" x="113" y="108">x₁</text><text class="tag" x="149" y="108">x₂</text><text class="tag" x="177" y="108">x₃</text>`+
+        arr(212,82,238,82,'acc')+`<path class="acc redraw" pathLength="1" d="${out}"/><text class="lbl acc-t" x="296" y="112">y</text>`);
+    },
+    // pendulum swinging + nonlinear vs linear response drifting apart
+    'pendulum-lin':()=>{
+      const px=72, py=22, L=82, bob=a=>[px+L*Math.sin(a), py+L*Math.cos(a)];
+      const a0=0.62, [bx,by]=bob(a0), [gx,gy]=bob(-a0);
+      // swing arc: x and y both depend on the angle, so build the path directly
+      let ad=''; for(let i=0;i<=40;i++){ const a=-0.75+1.5*i/40; ad+=(i?'L':'M')+f1(px+L*Math.sin(a))+' '+f1(py+L*Math.cos(a)); }
+      const X=t=>156+t*(150/(4*Math.PI)), Y=v=>70-v*34;
+      const lin=curve(t=>Math.cos(t), 0, 4*Math.PI, X, Y);
+      const non=curve(t=>Math.cos(0.86*t), 0, 4*Math.PI, X, Y);
+      return svgWrap(
+        `<path class="rule" d="M40 22H104"/><path class="soft" d="${ad}"/>`+
+        `<path class="rule" d="M${px} ${py}L${f1(gx)} ${f1(gy)}" style="stroke-width:1.4"/><circle cx="${f1(gx)}" cy="${f1(gy)}" r="7" style="fill:var(--line)"/>`+
+        `<path class="ink" d="M${px} ${py}L${f1(bx)} ${f1(by)}"/><circle class="dot-ink" cx="${f1(bx)}" cy="${f1(by)}" r="8"/><circle class="dot-ink" cx="${px}" cy="${py}" r="2.5"/>`+
+        `<path class="rule" d="M156 70H306"/><path class="ink" d="${non}"/><path class="acc redraw" pathLength="1" d="${lin}"/>`+
+        `<text class="tag" x="306" y="128" text-anchor="end">nonlinear vs linear</text>`);
+    },
+    // flipped impulse response sliding over u, product area shaded; the shortcut G·U in the corner
+    'tf-convolution':()=>{
+      const X=t=>18+t*28, Y=v=>104-v*48, T=6.4;
+      const u=t=>0.62+0.3*Math.sin(1.25*t);
+      const g=t=>1.45*Math.exp(-0.55*(T-t));
+      let area=`M${f1(X(0))} ${f1(Y(0))}`; for(let i=0;i<=80;i++){ const t=T*i/80; area+=`L${f1(X(t))} ${f1(Y(u(t)*g(t)))}`; } area+=`L${f1(X(T))} ${f1(Y(0))}Z`;
+      return svgWrap(
+        `<path class="rule" d="M18 104H302"/><path class="area" d="${area}"/>`+
+        `<path class="ink" d="${curve(u,0,10,X,Y)}"/>`+
+        `<path class="acc redraw" pathLength="1" d="${curve(g,0,T,X,Y)}"/>`+
+        `<path class="soft" d="M${f1(X(T))} 22V104"/><circle class="dot-acc" cx="${f1(X(T))}" cy="${f1(Y(g(T)))}" r="3.5"/>`+
+        `<text class="lbl" x="${f1(X(9.4))}" y="${f1(Y(u(9.4))-8)}">u</text><text class="lbl acc-t" x="${f1(X(T)-16)}" y="30">g</text>`+
+        `<text class="tag" x="302" y="28" text-anchor="end">g ∗ u → G · U</text>`);
+    },
+    // dark s-plane with the line Re s = σ₀, its ridge of weights and the poles; the signal it adds up to on the right
+    'tf-s-domain':()=>{
+      const X=t=>184+t*12.2, Y=v=>104-v*36;
+      const u=curve(t=>1+Math.exp(-0.4*t)*Math.sin(3*t), 0, 10, X, Y);
+      let ridge='M128 18';
+      for(let i=0;i<=60;i++){ const y=18+104*i/60; const w=3+14*Math.exp(-(((y-70)/9)**2))+8*Math.exp(-(((y-42)/7)**2))+8*Math.exp(-(((y-98)/7)**2)); ridge+=`L${f1(128+w)} ${f1(y)}`; }
+      ridge+='L128 122Z';
+      const x=(cx,cy,c)=>`<path d="M${cx-4} ${cy-4}L${cx+4} ${cy+4}M${cx+4} ${cy-4}L${cx-4} ${cy+4}" style="stroke:${c};stroke-width:1.6;fill:none"/>`;
+      const W='#e9eef1', A='oklch(0.81 0.12 75)';
+      return svgWrap(
+        `<rect x="14" y="12" width="140" height="116" rx="9" style="fill:oklch(0.255 0.026 248)"/>`+
+        `<path d="M22 70H148M118 18V122" style="stroke:rgba(255,255,255,.28);stroke-width:1;fill:none"/>`+
+        `<path d="${ridge}" style="fill:rgba(150,188,236,.22);stroke:rgba(150,188,236,.9);stroke-width:1.1"/>`+
+        `<path d="M128 18V122" style="stroke:${W};stroke-width:1.8;fill:none"/>`+
+        x(118,70,W)+x(106,42,W)+x(106,98,W)+x(62,56,A)+x(62,84,A)+
+        arr(160,70,178,70)+
+        `<path class="rule" d="M184 104H306"/><path class="acc redraw" pathLength="1" d="${u}"/>`+
+        `<text class="lbl acc-t" x="184" y="126">u</text><text class="tag" x="306" y="24" text-anchor="end">u = Σ e<tspan dy="-4" font-size="7.5">st</tspan></text>`);
+    },
+    // u → [G(s)] → y: same frequency, scaled and shifted
+    'tf-sine-machine':()=>{
+      const inp=curve(t=>Math.sin(t), 0, 5*Math.PI, t=>14+t*(84/(5*Math.PI)), v=>70-v*16);
+      const out=curve(t=>Math.sin(t-1.1), 0, 5*Math.PI, t=>222+t*(84/(5*Math.PI)), v=>70-v*30);
+      return svgWrap(
+        `<path class="rule" d="M14 70H98M222 70H306"/><path class="soft" d="M222 40H306M222 100H306"/>`+
+        `<path class="ink" d="${inp}"/>`+arr(102,70,126,70)+
+        `<rect class="box" x="130" y="46" width="64" height="48" rx="6"/><text class="gs" x="162" y="75" text-anchor="middle">G(s)</text>`+
+        arr(198,70,218,70,'acc')+`<path class="acc redraw" pathLength="1" d="${out}"/>`+
+        `<text class="lbl" x="14" y="122">u</text><text class="lbl acc-t" x="222" y="122">y</text><text class="tag" x="306" y="122" text-anchor="end">same ω</text>`);
+    },
+  };
+
   // ---- gallery ----
   const vg=document.getElementById('viz-gal');
   WEEKS.forEach(w=>w.viz.forEach(v=>{
     const c=document.createElement('div'); c.className='gcard';
     c.innerHTML=`
-      <div class="ph">${v.label.toLowerCase()}</div>
+      ${THUMBS[v.k] ? `<div class="ph thumb">${THUMBS[v.k]()}</div>` : `<div class="ph">${v.label.toLowerCase()}</div>`}
       <div class="gt">${v.label}</div>
       <div class="gm">WEEK ${String(w.n).padStart(2,'0')} · ${w.t}</div>
       <div class="gstatus ${v.live?'live':'soon'}">${v.live?'● interactive':'○ in development'}</div>`;

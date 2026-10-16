@@ -64,6 +64,20 @@ Same setup as the pendulum demo. Source: `viz-src/states-sensors/`
 `viz/week-03-states-sensors.html`, commit. The intro text above an embedded
 demo comes from the `note` field of its entry in `WEEKS`.
 
+### Editing the week 5 transfer-function demos
+Three demos share one project: `viz-src/transfer-functions/`. Each has its
+own entry (`conv.html`, `sine.html`, `est.html`) and its UI in `src/conv/`,
+`src/sine/`, `src/est/`. Complex numbers, polynomials,
+partial fractions and the LTI simulation are in `src/shared/math.ts`, the
+parser for typed polynomials is in `src/shared/polyparse.ts`, and the plot
+helpers and styles are in `src/shared/`. The s-plane demo (`est`) keeps its
+systems in `src/est/signals.ts`.
+After `pnpm install`, run
+`sh build.sh` from that folder. It builds each entry separately (a joint build
+would split React into a shared chunk that html-inline can't inline) and
+writes `viz/week-05-convolution.html`, `viz/week-05-sine-machine.html` and
+`viz/week-05-s-domain.html`.
+
 ### Adding a visualisation
 Visualisations live only on the Visualisations page/gallery, not per week.
 1. Add `{k:"unique-key", label:"Demo name"}` to that week's `viz:[ ]`.
