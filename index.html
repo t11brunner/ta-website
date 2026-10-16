@@ -345,7 +345,8 @@
        ex — a week can have one file without the other.
      • Visualisations live on the Visualisations page, not per week —
        add {k:"unique-key", label:"Name"} to a week's viz[] there and
-       set  live:true  once the demo is built.
+       set  live:true  once the demo is built. hidden:true keeps an
+       entry out of the gallery (parked for a later week).
      ===================================================================== */
   const YEAR = 2026;
   const WEEKS = [
@@ -360,9 +361,9 @@
     {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:false, gaps:false, viz:[
       {k:"tf-convolution", label:"Convolution vs multiplication", live:true, src:"viz/week-05-convolution.html",
        note:"Why leave the time domain at all? There, every block acts through a convolution integral that has to be recomputed for every instant. In the s-domain the same block just multiplies. Watch both compute the same output, and see what happens to the cost when you chain two blocks."},
-      {k:"tf-s-domain", label:"From time to the s-plane", live:true, src:"viz/week-05-s-domain.html",
+      {k:"tf-s-domain", label:"From time to the s-plane", live:true, hidden:true, src:"viz/week-05-s-domain.html",
        note:"Instead of following a signal instant by instant, take it apart into pieces e^st, one for every point s of the complex plane. Each piece passes through the system unchanged except for one complex factor G(s). That is why e^st is the standard test input, and why outputs get easy: multiply every piece by G(s), then add them back up."},
-      {k:"tf-sine-machine", label:"A machine for sinusoids", live:true, src:"viz/week-05-sine-machine.html",
+      {k:"tf-sine-machine", label:"A machine for sinusoids", live:true, hidden:true, src:"viz/week-05-sine-machine.html",
        note:"A sinusoid goes into a stable LTI system and a sinusoid of the same frequency comes out, scaled and shifted. Plug in s = jω: the length of G(jω) is the amplitude ratio, its angle the phase shift. Starts with the example from the slides, and you can type in your own G(s)."}]},
     {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:false, gaps:false, viz:[]},
     {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, viz:[]},
@@ -501,6 +502,7 @@
   // ---- gallery ----
   const vg=document.getElementById('viz-gal');
   WEEKS.forEach(w=>w.viz.forEach(v=>{
+    if(v.hidden) return;
     const c=document.createElement('div'); c.className='gcard';
     c.innerHTML=`
       ${THUMBS[v.k] ? `<div class="ph thumb">${THUMBS[v.k]()}</div>` : `<div class="ph">${v.label.toLowerCase()}</div>`}
