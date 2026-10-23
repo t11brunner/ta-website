@@ -87,26 +87,32 @@ export default function SectionMachine(props: { s: C; setS: (s: C) => void; sys:
             <div className="step">
               <span className="k">2</span>
               <span className="fx">
-                <i>u</i> = <Est />, &ensp;<i>y</i> = <i>Y</i>·<Est />
+                <i>u</i> = <Est />, &ensp;<i>y</i> = <i>c</i>·<Est />
                 {derivs.map((k) => (
                   <span key={k}>
-                    , &ensp;<i>y{k === 1 ? '̇' : '̈'}</i> = <i>s</i>{k > 1 && <sup>{k}</sup>}<i>Y</i>·<Est />
+                    , &ensp;<i>y{k === 1 ? '̇' : '̈'}</i> = <i>s</i>{k > 1 && <sup>{k}</sup>}<i>c</i>·<Est />
                   </span>
                 ))}
               </span>
             </div>
             <div className="step">
               <span className="k">3</span>
-              <span className="fx">(<PolyView p={G.den} />)·<i>Y</i>·<Est /> = {G.num.length === 1 && G.num[0] === 1 ? '' : <>{nf(G.num[0])}·</>}<Est /></span>
+              <span className="fx">(<PolyView p={G.den} />)·<i>c</i>·<Est /> = {G.num.length === 1 && G.num[0] === 1 ? '' : <>{nf(G.num[0])}·</>}<Est /></span>
             </div>
             <div className="step">
               <span className="k">4</span>
-              <span className="fx choice"><i>Y</i> = <RatView num={G.num} den={G.den} /> = <i>G</i>(<S />)</span>
+              <span className="fx choice"><i>c</i> = <RatView num={G.num} den={G.den} /> = <i>G</i>(<S />)</span>
             </div>
             <div className="step">
               <span />
               <span className="hint">
-                Divide by <Est /> (it is never zero): the ODE has turned into algebra. At the current <i>s</i> = <Cnum z={s} />, the whole system is the single number <i>G</i>(<i>s</i>) = {onPole ? '∞' : <Cnum z={Gs} />}.
+                Guess that the output is the input times an unknown number <i>c</i>. Divide by <Est /> (it is never zero): the ODE has turned into algebra, and <i>c</i> = <i>G</i>(<i>s</i>). At the current <i>s</i> = <Cnum z={s} />, the whole system is the single number <i>G</i>(<i>s</i>) = {onPole ? '∞' : <Cnum z={Gs} />}.
+              </span>
+            </div>
+            <div className="step">
+              <span />
+              <span className="hint">
+                Careful, <i>c</i> is not the Laplace transform <i>Y</i>(<i>s</i>). That one obeys <i>Y</i>(<i>s</i>) = <i>G</i>(<i>s</i>)·<i>U</i>(<i>s</i>) for any input, and equals <i>G</i>(<i>s</i>) only for the Dirac impulse, where <i>U</i>(<i>s</i>) = 1. Here the input is one single piece <Est />, and <i>G</i>(<i>s</i>) is the factor it gets multiplied by.
               </span>
             </div>
           </div>

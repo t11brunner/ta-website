@@ -1,11 +1,11 @@
 // Section 1: every point s of the plane is one signal e^{st}.
 import { Canvas } from '../shared/Canvas'
-import { cexp, cscale, cx, type C } from '../shared/math'
-import { INK, LINE, MUTE, SANS, arrow, dot, fmt, frame, grid, label, polyline, tag, vline } from '../shared/plot'
+import { cx, type C } from '../shared/math'
+import { INK, MUTE, SANS, fmt, frame, grid, polyline, tag } from '../shared/plot'
 import { Cnum, nf } from '../shared/tex'
-import { Ctrl, Pills, PlayToggle, Slider, useLoop } from '../shared/ui'
+import { Ctrl, Pills, Slider } from '../shared/ui'
 import { E, Est, Sbar } from './fx'
-import { DARK, dragTo, expLabel, sGrid, sMap, sPoint, type Range, type SFrame } from './splane'
+import { DARK, dragTo, sGrid, sMap, sPoint, type Range, type SFrame } from './splane'
 
 const T = 8
 const N = 600
@@ -69,28 +69,25 @@ function describe(s: C) {
   const sg = s.re
   const w = Math.abs(s.im)
   const shrink = <>to <E x={nf(sg)} /> ≈ {nf(Math.exp(sg))} of its size every second</>
-  const turn = <>turns once every {nf((2 * Math.PI) / w)} s (ω = {nf(w)} rad/s)</>
+  const turn = <>oscillates with period {nf((2 * Math.PI) / w)} s (ω = {nf(w)} rad/s)</>
   if (sg === 0 && w === 0)
     return <><b>s = 0:</b> <E x={<>0<i>t</i></>} /> = 1, a constant. A step is made of exactly this one piece.</>
   if (w === 0)
-    return <><b>s = {nf(sg)} is real:</b> no turning at all. The piece {sg < 0 ? <>shrinks {shrink}</> : <>grows by a factor <E x={nf(sg)} /> ≈ {nf(Math.exp(sg))} every second</>}.</>
+    return <><b>s = {nf(sg)} is real:</b> no oscillation at all. The piece {sg < 0 ? <>shrinks {shrink}</> : <>grows by a factor <E x={nf(sg)} /> ≈ {nf(Math.exp(sg))} every second</>}.</>
   if (sg === 0)
-    return <><b>s sits on the jω axis:</b> the arrow keeps its length and {turn}. Together with its mirror this is a pure cosine. The sinusoids of the sine machine all live on this axis.</>
+    return <><b>s sits on the jω axis:</b> the piece keeps its size and {turn}. Together with its mirror this is a pure cosine. All pure sinusoids live on this axis.</>
   return (
     <>
-      <b>s = <Cnum z={s} />:</b> the arrow {turn} and {sg < 0 ? <>shrinks {shrink}</> : <>grows by a factor <E x={nf(sg)} /> ≈ {nf(Math.exp(sg))} every second</>}. {sg < 0 ? 'Left half-plane: a damped oscillation.' : 'Right half-plane: an oscillation that blows up.'}
+      <b>s = <Cnum z={s} />:</b> the piece {turn} and {sg < 0 ? <>shrinks {shrink}</> : <>grows by a factor <E x={nf(sg)} /> ≈ {nf(Math.exp(sg))} every second</>}. {sg < 0 ? 'Left half-plane: a damped oscillation.' : 'Right half-plane: an oscillation that blows up.'}
     </>
   )
 }
 
 export default function SectionPoint(props: { s: C; setS: (s: C) => void }) {
   const { s, setS } = props
-  const clock = useLoop(T, 1)
-  const t = clock.t
   const preset = PRESETS.find((p) => p.s.re === s.re && p.s.im === s.im)?.key ?? null
   const growth = Math.exp(s.re * T)
 
-  const z = cexp(cscale(s, t))
   const sig = TS.map((tt) => Math.exp(s.re * tt) * Math.cos(s.im * tt))
   const env = TS.map((tt) => Math.exp(s.re * tt))
 
@@ -138,97 +135,25 @@ export default function SectionPoint(props: { s: C; setS: (s: C) => void }) {
 
         <div className="plot-wrap">
           <div className="plot-title">
-            <span className="lbl">The value of <span className="math"><Est /></span> as an arrow</span>
-            <span className="right">
-              <span className="legend">
-                <span><i className="sw" /><span className="t"><Est /></span></span>
-                <span><i className="sw ghost" /><span className="t"><E x={<><Sbar /><i>t</i></>} /></span></span>
-              </span>
-              <PlayToggle playing={clock.playing} setPlaying={clock.setPlaying} />
+            <span className="lbl">Over time &nbsp;·&nbsp; <span className="math"><E x={<>σ<i>t</i></>} />cos(ω<i>t</i>)</span></span>
+            <span className="legend">
+              <span><i className="sw" /><span className="t">signal</span></span>
+              <span><i className="sw ghost" /><span className="t">± <E x={<>σ<i>t</i></>} /></span></span>
             </span>
           </div>
           <Canvas
             height={300}
             draw={(ctx, w, h) => {
-              const R = Math.min(2.6, Math.max(1, growth)) * 1.12
-              const c0 = w / 2
-              const r0 = h / 2
-              const sc = (Math.min(w, h) / 2 - 16) / R
-              const X = (re: number) => c0 + sc * re
-              const Y = (im: number) => r0 - sc * im
-              ctx.strokeStyle = LINE
-              ctx.lineWidth = 1
-              ctx.beginPath()
-              ctx.moveTo(8, r0)
-              ctx.lineTo(w - 8, r0)
-              ctx.moveTo(c0, 6)
-              ctx.lineTo(c0, h - 6)
-              ctx.stroke()
-              ctx.setLineDash([2, 3])
-              ctx.beginPath()
-              ctx.arc(c0, r0, sc, 0, 2 * Math.PI)
-              ctx.stroke()
-              ctx.setLineDash([])
-              label(ctx, 'Re', w - 10, r0 - 6, MUTE, 'right')
-              label(ctx, 'Im', c0 + 6, 16, MUTE)
-
-              // the spiral traced so far, and its mirror
-              const n = Math.max(2, Math.ceil((t / T) * N))
-              for (const sign of [-1, 1]) {
-                ctx.beginPath()
-                for (let i = 0; i <= n; i++) {
-                  const v = cexp(cscale(cx(s.re, sign * s.im), (t * i) / n))
-                  if (i) ctx.lineTo(X(v.re), Y(v.im))
-                  else ctx.moveTo(X(v.re), Y(v.im))
-                }
-                ctx.strokeStyle = sign > 0 ? INK : LINE
-                ctx.lineWidth = sign > 0 ? 1.4 : 1.2
-                ctx.stroke()
-              }
-              // both arrows share their real part: drop them onto the real axis
-              const xr = X(z.re)
-              ctx.setLineDash([3, 3])
-              ctx.strokeStyle = MUTE
-              ctx.lineWidth = 1
-              ctx.beginPath()
-              ctx.moveTo(xr, Y(z.im))
-              ctx.lineTo(xr, Y(-z.im))
-              ctx.stroke()
-              ctx.setLineDash([])
-              arrow(ctx, c0, r0, xr, Y(-z.im), MUTE, 1.6, 7)
-              arrow(ctx, c0, r0, xr, Y(z.im), INK, 2.2, 8)
-              dot(ctx, xr, r0, INK, 4.5)
-              const up = z.im >= 0
-              expLabel(ctx, 'st', xr + 7, Y(z.im) + (up ? -4 : 14), INK)
-              if (Math.abs(z.im) * sc > 14) expLabel(ctx, 's̄t', xr + 7, Y(-z.im) + (up ? 14 : -4), MUTE)
+              const top = Math.min(Math.max(1, growth), CAP) * 1.1
+              const f = frame(ctx, w, h, { x: [0, T], y: [-top, top], xUnit: 's' })
+              polyline(ctx, f, TS, env, { color: MUTE, width: 1.2, dash: [4, 4] })
+              polyline(ctx, f, TS, env.map((v) => -v), { color: MUTE, width: 1.2, dash: [4, 4] })
+              polyline(ctx, f, TS, sig, { color: INK, width: 2 })
+              if (growth > CAP) tag(ctx, f.r - 62, f.t + 14, 'keeps growing ↑', INK, 'rgba(29, 35, 38, 0.07)')
             }}
           />
-          <div className="plot-foot"><Est /> turns at ω and stretches like <E x={<>σ<i>t</i></>} />. Its mirror turns the other way, so the two always share the same real part (the dot). That shared real part is the signal over time below.</div>
+          <div className="plot-foot">The real signal belonging to <i>s</i>: it oscillates at ω inside the envelope ± <E x={<>σ<i>t</i></>} />.</div>
         </div>
-      </div>
-
-      <div className="plot-wrap">
-        <div className="plot-title">
-          <span className="lbl">Over time &nbsp;·&nbsp; <span className="math">Re <Est /> = ½(<Est /> + <E x={<><Sbar /><i>t</i></>} />) = <E x={<>σ<i>t</i></>} />cos(ω<i>t</i>)</span></span>
-          <span className="legend">
-            <span><i className="sw" /><span className="t">signal</span></span>
-            <span><i className="sw ghost" /><span className="t">± <E x={<>σ<i>t</i></>} /></span></span>
-          </span>
-        </div>
-        <Canvas
-          height={170}
-          draw={(ctx, w, h) => {
-            const top = Math.min(Math.max(1, growth), CAP) * 1.1
-            const f = frame(ctx, w, h, { x: [0, T], y: [-top, top], xUnit: 's' })
-            polyline(ctx, f, TS, env, { color: MUTE, width: 1.2, dash: [4, 4] })
-            polyline(ctx, f, TS, env.map((v) => -v), { color: MUTE, width: 1.2, dash: [4, 4] })
-            polyline(ctx, f, TS, sig, { color: INK, width: 2 })
-            vline(ctx, f, t, MUTE)
-            const v = z.re
-            if (Math.abs(v) <= top) dot(ctx, f.sx(t), f.sy(v), INK, 4.5)
-            if (growth > CAP) tag(ctx, f.r - 62, f.t + 14, 'keeps growing ↑', INK, 'rgba(29, 35, 38, 0.07)')
-          }}
-        />
       </div>
 
       <div className="callout">{describe(s)}</div>
