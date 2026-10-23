@@ -31,6 +31,8 @@ const W_MIN = 0.1
 const W_MAX = 10
 const N = 3000
 const PHASOR_PERIOD = 2.6 // seconds of animation per input period
+/** The spinning-phasor panel, switched off for now (it confused more than it helped). */
+const SHOW_PHASORS = false
 
 function system(k: Exclude<SysKey, 'custom'>, zeta: number, tau: number): Rat {
   if (k === 'handout') return { num: [1], den: [1, 2, 2] }
@@ -304,7 +306,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="three">
+      <div className={SHOW_PHASORS ? 'three' : 'three two'}>
         <div className="plot-wrap">
           <div className="plot-title">
             <span className="lbl"><span className="math">G(jω)</span> in the complex plane</span>
@@ -376,7 +378,7 @@ export default function App() {
           <div className="plot-foot">Length = amplitude ratio, angle = phase shift. The faint curve is where the arrow tip goes as ω sweeps from 0.1 to 10.</div>
         </div>
 
-        <div className="plot-wrap">
+        {SHOW_PHASORS && <div className="plot-wrap">
           <div className="plot-title">
             <span className="lbl">Phasors &nbsp;·&nbsp; <span className="math">u</span> and <span className="math">y</span> spinning</span>
           </div>
@@ -436,7 +438,7 @@ export default function App() {
             }}
           />
           <div className="plot-foot">Both arrows turn at the same rate ω: <b>same frequency</b>. The y arrow is the u arrow times G(jω), stretched by |G| and turned by ∠G. The signals are their shadows on the real axis.</div>
-        </div>
+        </div>}
 
         <div className="panel">
           <div className="lbl" style={{ marginBottom: 12 }}>Plug in <span className="math">s = jω</span></div>
