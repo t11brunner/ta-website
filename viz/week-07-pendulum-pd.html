@@ -37,7 +37,10 @@ h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.
 canvas { display: block; width: 100%; touch-action: none; }
 #scene { aspect-ratio: 1 / 1; cursor: grab; }
 #scene.dragging { cursor: grabbing; }
-#splane, #trace { aspect-ratio: 16 / 10; }
+#splane { aspect-ratio: 16 / 10; }
+#trace { aspect-ratio: 3 / 1; }
+.rl { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.pv { font-family: var(--f-mono); font-size: 13px; line-height: 1.7; margin-top: 6px; color: var(--ink); font-variant-numeric: tabular-nums; }
 
 .seg { display: flex; flex-wrap: wrap; gap: 4px; }
 .seg button, .play {
@@ -97,7 +100,8 @@ input[type=range]:disabled { opacity: .35; }
 .diagram .off text { fill: var(--mute); }
 
 @media (max-width: 760px) {
-  .vrow, .two { grid-template-columns: minmax(0, 1fr); }
+  .vrow, .two, .rl { grid-template-columns: minmax(0, 1fr); }
+  #trace { aspect-ratio: 16 / 10; }
 }
 </style>
 </head>
@@ -212,12 +216,30 @@ input[type=range]:disabled { opacity: .35; }
     <div class="plot-foot">Everything inside the dashed box is software: the minus sign of the junction is the line <code style="font-family:var(--f-mono);font-size:12px">e = r - th</code>, and the <i>s</i> in <i>k<sub>D</sub></i>·<i>s</i> is a difference quotient over one tick. Only the encoder, the wheel motor and the pendulum are physical. In slow motion the part of the loop that is running right now lights up here too.</div>
   </div>
 
-  <div class="two">
-    <div class="plot-wrap">
-      <div class="plot-title"><span class="lbl">Closed-loop poles</span><span class="legend"><span>× open loop</span><span>○ PD zero</span><span>● closed loop</span></span></div>
+  <div class="plot-wrap block-row">
+    <div class="plot-title"><span class="lbl">Closed-loop poles</span><span class="legend"><span>× open loop</span><span>○ PD zero</span><span>● closed loop</span></span></div>
+    <div class="rl">
       <canvas id="splane" role="img" aria-label="s-plane with the closed-loop poles"></canvas>
-      <div class="plot-foot">Roots of <i>s</i>² + <i>k<sub>D</sub></i><i>s</i> + (<i>k<sub>P</sub></i> − <i>g</i>/<i>ℓ</i>). With P only they can at best sit on the imaginary axis, as on the slide.</div>
+      <div>
+        <div class="ctrl" style="margin-top:0">
+          <div class="clabel"><span class="cname">Proportional gain <em>k<sub>P</sub></em></span><span class="cval" id="kpVal2">20.0 s⁻²</span></div>
+          <input id="kp2" type="range" min="0" max="40" step="0.5" value="20" aria-label="Proportional gain kP, next to the pole plot">
+        </div>
+        <div class="ctrl">
+          <div class="clabel"><span class="cname">Derivative gain <em>k<sub>D</sub></em></span><span class="cval" id="kdVal2">4.0 s⁻¹</span></div>
+          <input id="kd2" type="range" min="0" max="12" step="0.1" value="4" aria-label="Derivative gain kD, next to the pole plot">
+        </div>
+        <div class="ctrl">
+          <span class="lbl">Closed-loop poles</span>
+          <div class="pv" id="poleVals"></div>
+        </div>
+        <p class="hint" id="rlHint"></p>
+      </div>
     </div>
+    <div class="plot-foot">Roots of <i>s</i>² + <i>k<sub>D</sub></i><i>s</i> + (<i>k<sub>P</sub></i> − <i>g</i>/<i>ℓ</i>). These sliders are the same gains as in the controller panel, and the pendulum reacts to them live. With P only, the poles can at best sit on the imaginary axis, as on the slide.</div>
+  </div>
+
+  <div>
     <div class="plot-wrap">
       <div class="plot-title"><span class="lbl">Tilt angle θ(t)</span><span class="legend">last 8 s</span></div>
       <canvas id="trace" role="img" aria-label="Plot of tilt angle over time"></canvas>
@@ -479,10 +501,18 @@ input[type=range]:disabled { opacity: .35; }
 
   // ---------- UI ----------
   function readouts() {
-    $("kpVal").textContent = kp().toFixed(1) + " s⁻²";
-    $("kdVal").textContent = kd().toFixed(1) + " s⁻¹";
-    $("kd").disabled = mode !== "pd";
-    $("kp").disabled = mode === "off";
+    $("kpVal").textContent = $("kpVal2").textContent = kp().toFixed(1) + " s⁻²";
+    $("kdVal").textContent = $("kdVal2").textContent = kd().toFixed(1) + " s⁻¹";
+    $("kd").disabled = $("kd2").disabled = mode !== "pd";
+    $("kp").disabled = $("kp2").disabled = mode === "off";
+    const fp = ([re, im]) => {
+      const r = (re < -0.005 ? "−" : " ") + Math.abs(re).toFixed(2);
+      return Math.abs(im) < 1e-9 ? r : r + (im > 0 ? " + " : " − ") + Math.abs(im).toFixed(2) + "j";
+    };
+    const pl = mode === "off" ? [[Math.sqrt(G_L), 0], [-Math.sqrt(G_L), 0]] : poles();
+    $("poleVals").innerHTML = `s₁ = ${fp(pl[0])}<br>s₂ = ${fp(pl[1])}`;
+    $("rlHint").textContent = mode === "off" ? "The controller is off, so these are the open-loop poles. Pick P or PD in the controller panel to move them."
+      : mode === "p" ? "P only: kD is not used. Pick PD in the controller panel to use the second slider." : "";
     const [kind, text] = stability();
     const s = $("status"); s.className = "status " + kind; s.textContent = text;
     const ct = $("ctrlText");
@@ -495,8 +525,10 @@ input[type=range]:disabled { opacity: .35; }
     document.querySelectorAll("[data-mode]").forEach((q) => q.classList.toggle("on", q === b));
     buildCode(); readouts();
   }));
-  $("kp").addEventListener("input", readouts);
-  $("kd").addEventListener("input", readouts);
+  // the gain sliders exist twice (controller panel and pole plot) and stay in sync
+  for (const [a, b] of [["kp", "kp2"], ["kd", "kd2"]]) {
+    for (const [src, dst] of [[a, b], [b, a]]) $(src).addEventListener("input", () => { $(dst).value = $(src).value; readouts(); });
+  }
   $("tap").addEventListener("click", () => { if (!fallen) om += (Math.random() < 0.5 ? -1 : 1) * 1.4; });
   $("reset").addEventListener("click", () => { th = 0.2 * (Math.random() < 0.5 ? -1 : 1); thOld = th; om = 0; fallen = false; hist = []; });
   $("pause").addEventListener("click", (ev) => {
