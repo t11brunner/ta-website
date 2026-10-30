@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code on the Pendulum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* TA design system (ta-website/viz variant): single light theme, paper ground, one cool-blue accent, hairline cards. */
+:root {
+  --paper: #eef1f2; --paper-2: #e3e8ea; --card: #f8fafb;
+  --ink: #1d2326; --ink-soft: #565f63; --mute: #8b9497;
+  --line: #d1d8da; --line-soft: #dde3e5;
+  --accent: oklch(52% .09 250); --accent-soft: oklch(52% .09 250 / .1); --accent-soft-strong: oklch(52% .09 250 / .18);
+  --amber: oklch(64% .13 62); --warn: oklch(55% .15 30);
+  --f-head: "Public Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; color: var(--ink); font-family: var(--f-head); -webkit-font-smoothing: antialiased; }
+.viz { padding: 4px 2px 8px; }
+.lbl { font-family: var(--f-head); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); font-size: 11px; font-weight: 500; }
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 6px 0 12px; text-wrap: balance; }
+.intro { max-width: 70ch; margin: 0 0 26px; font-size: 16px; line-height: 1.65; }
+.intro b { font-weight: 600; }
+.vrow { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; margin-bottom: 22px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.plot-wrap, .panel { border: 1px solid var(--line); background: var(--card); border-radius: 14px; min-width: 0; }
+.plot-wrap { padding: 14px 16px 8px; }
+.panel { padding: 18px 18px 16px; }
+.block-row { margin-bottom: 22px; }
+.plot-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.plot-foot { color: var(--ink-soft); padding: 6px 0 6px; font-size: 13px; line-height: 1.5; }
+canvas { display: block; width: 100%; touch-action: none; }
+#scene { aspect-ratio: 1 / 1; cursor: grab; }
+#scene.dragging { cursor: grabbing; }
+#splane, #trace { aspect-ratio: 16 / 10; }
+
+.seg { display: flex; flex-wrap: wrap; gap: 4px; }
+.seg button, .play {
+  cursor: pointer; border: 1px solid var(--line); color: var(--ink-soft); font-family: var(--f-head); background: transparent;
+  border-radius: 999px; padding: 6px 13px; font-size: 13px; transition: color .14s, background .14s, border-color .14s;
+}
+.seg button:hover, .play:hover { color: var(--ink); border-color: var(--mute); }
+.seg button.on, .play.on { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: space-between; align-items: center; margin: 4px 0 6px; }
+.toolbar .seg { gap: 6px; }
+
+.ctrl { margin-top: 18px; }
+.clabel { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.cname { font-size: 14px; font-weight: 500; }
+.cname em { color: var(--mute); font-style: italic; font-weight: 400; }
+.cval { font-family: var(--f-mono); color: var(--accent); font-size: 13px; font-variant-numeric: tabular-nums; }
+input[type=range] { appearance: none; -webkit-appearance: none; background: var(--line); border-radius: 0; outline: none; width: 100%; height: 2px; margin: 6px 0; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; background: var(--accent); cursor: pointer; border: 0; border-radius: 50%; width: 14px; height: 14px; }
+input[type=range]::-moz-range-thumb { background: var(--accent); cursor: pointer; border: 0; border-radius: 50%; width: 14px; height: 14px; }
+input[type=range]:disabled { opacity: .35; }
+.hint { font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin: 6px 0 0; }
+
+/* code listing */
+.code { margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: 10px 0; overflow-x: auto; }
+.code .ln { display: grid; grid-template-columns: 2em 23ch 1fr; gap: 0 6px; padding: 1px 10px 1px 0; font-family: var(--f-mono); font-size: 12px; line-height: 1.75; white-space: pre; transition: background .14s; }
+.code .ln .no { color: var(--mute); text-align: right; }
+.code .ln .src { color: var(--ink); }
+.code .ln .val { color: var(--mute); font-variant-numeric: tabular-nums; }
+.code .ln.cmt .src { color: var(--mute); grid-column: 2 / -1; }
+.code .ln.live { background: var(--accent-soft-strong); }
+.code .ln.live .val { color: var(--accent); }
+.tick { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; font-size: 13px; color: var(--ink-soft); flex-wrap: wrap; }
+.tick span.num { font-family: var(--f-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.status { font-size: 13px; font-weight: 600; }
+.status.ok { color: var(--accent); } .status.osc { color: var(--amber); } .status.bad { color: var(--warn); }
+.legend { display: inline-flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--ink-soft); }
+
+/* block diagram */
+.diagram { overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.diagram .w { stroke: var(--ink); stroke-width: 1.5; fill: none; transition: stroke .14s; }
+.diagram .blk { fill: var(--card); stroke: var(--ink); stroke-width: 1.5; transition: fill .14s, stroke .14s; }
+.diagram .codebox { fill: transparent; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 5 4; transition: fill .14s; }
+.diagram text { font-family: var(--f-head); fill: var(--ink); }
+.diagram .math { font-style: italic; font-size: 17px; }
+.diagram .sig { font-family: var(--f-mono); font-size: 12px; fill: var(--accent); }
+.diagram .tag { font-size: 11px; font-weight: 500; letter-spacing: .06em; fill: var(--ink-soft); }
+.diagram .note { font-size: 12.5px; fill: var(--ink-soft); }
+.diagram .badge circle { fill: var(--accent); }
+.diagram .badge text { fill: var(--card); font-size: 11px; font-weight: 700; }
+.diagram .hot .w { stroke: var(--accent); stroke-width: 3; }
+.diagram .hot .blk { fill: var(--accent-soft-strong); stroke: var(--accent); }
+.diagram .hot.codebox, .diagram .codebox.hot { fill: var(--accent-soft); }
+.diagram .off .w, .diagram .off .blk { stroke: var(--mute); }
+.diagram .off text { fill: var(--mute); }
+
+@media (max-width: 760px) {
+  .vrow, .two { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="viz">
+  <p class="intro">On the slide, the controller is a block <i>k<sub>P</sub></i> + <i>k<sub>D</sub></i>·<i>s</i>. On the real cart it is <b>a few lines of code on a microcontroller that rides along on the cart</b>. An encoder at the hinge measures the tilt θ, the code computes <i>u</i>, and the wheel motor accelerates the cart. Accelerating the hinge sideways tips the pendulum, exactly like a torque would: with the cart acceleration <i>a</i>, the pendulum obeys θ̈ = (<i>g</i>/<i>ℓ</i>)θ − <i>a</i>/<i>ℓ</i>, so <i>a</i> = −<i>ℓ</i>·<i>u</i> gives back the slide's model. Drag the pendulum, tap it, or switch the controller off.</p>
+
+  <div class="vrow">
+    <div class="plot-wrap">
+      <div class="plot-title">
+        <span class="lbl">Inverted pendulum on a cart</span>
+        <span class="status ok" id="status">Asymptotically stable</span>
+      </div>
+      <canvas id="scene" role="img" aria-label="Inverted pendulum on a cart with encoder, microcontroller and wheel motor. Drag the pendulum to tilt it."></canvas>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Actions">
+          <button class="play" id="tap" type="button">Tap it</button>
+          <button class="play" id="reset" type="button">Reset</button>
+        </div>
+        <div class="seg" role="group" aria-label="Time">
+          <button class="play" id="pause" type="button" aria-pressed="false">Pause</button>
+          <button class="play" id="slow" type="button" aria-pressed="false">Slow motion</button>
+        </div>
+      </div>
+      <div class="plot-foot" id="foot">Drag the pendulum sideways and let go. The arrow under the cart is the acceleration the motor commands. Only this acceleration matters for the pendulum, so the cart's position is left out.</div>
+    </div>
+
+    <div class="panel">
+      <span class="lbl">Controller</span>
+      <div class="seg" role="group" aria-label="Controller type" style="margin-top:10px">
+        <button type="button" data-mode="off">Off</button>
+        <button type="button" data-mode="p">P</button>
+        <button type="button" data-mode="pd" class="on">PD</button>
+      </div>
+
+      <div class="code" id="code" aria-label="Controller code running on the microcontroller"></div>
+      <div class="tick"><span>Loop runs every 5 ms (200 times per second)</span><span>tick <span class="num" id="tickNo">0</span></span></div>
+
+      <div class="ctrl">
+        <div class="clabel"><span class="cname">Proportional gain <em>k<sub>P</sub></em></span><span class="cval" id="kpVal">20.0 s⁻²</span></div>
+        <input id="kp" type="range" min="0" max="40" step="0.5" value="20" aria-label="Proportional gain kP">
+      </div>
+      <div class="ctrl">
+        <div class="clabel"><span class="cname">Derivative gain <em>k<sub>D</sub></em></span><span class="cval" id="kdVal">4.0 s⁻¹</span></div>
+        <input id="kd" type="range" min="0" max="12" step="0.1" value="4" aria-label="Derivative gain kD">
+      </div>
+      <p class="hint">Gains are in the slide's units (prefactor 1/(<i>mℓ</i>²) absorbed), with <i>g</i>/<i>ℓ</i> = 9.81 s⁻² and ℓ = 1 m. <i>k<sub>P</sub></i> has to beat <i>g</i>/<i>ℓ</i> just to hold the pendulum up.</p>
+    </div>
+  </div>
+
+  <div class="plot-wrap block-row">
+    <div class="plot-title"><span class="lbl">The same loop as a block diagram</span><span class="legend">numbers match the parts on the cart</span></div>
+    <div class="diagram">
+      <svg viewBox="0 0 920 250" role="img" aria-label="Block diagram: r, summing junction, controller kP plus kD s, plant 1 over s squared minus g over l, output theta fed back. Controller and junction are code on the microcontroller.">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,1 L10,5 L0,9 z" fill="#1d2326"/>
+          </marker>
+        </defs>
+
+        <!-- code region -->
+        <rect id="dCode" class="codebox" x="92" y="24" width="318" height="136" rx="14"/>
+        <g class="badge" transform="translate(112,44)"><circle r="10"/><text text-anchor="middle" y="4">2</text></g>
+        <text class="tag" x="128" y="48">CODE ON THE MICROCONTROLLER</text>
+
+        <!-- reference and junction -->
+        <text class="math" x="38" y="96">r</text>
+        <text class="sig" x="52" y="122">0</text>
+        <line class="w" x1="50" y1="100" x2="127" y2="100" marker-end="url(#arr)"/>
+        <circle class="blk" cx="140" cy="100" r="12"/>
+        <text x="120" y="128" font-size="16">−</text>
+
+        <!-- controller -->
+        <g id="dCtrl">
+          <line class="w" x1="152" y1="100" x2="228" y2="100" marker-end="url(#arr)"/>
+          <text class="math" x="186" y="90" text-anchor="middle">e</text>
+          <text class="sig" id="sigE" x="190" y="122" text-anchor="middle">0.00</text>
+          <rect class="blk" x="230" y="72" width="160" height="56" rx="6"/>
+          <text class="math" id="ctrlText" x="310" y="106" text-anchor="middle">kₚ + k_D·s</text>
+        </g>
+
+        <!-- actuator: u leaves the code -->
+        <g id="dMotor">
+          <line class="w" x1="390" y1="100" x2="528" y2="100" marker-end="url(#arr)"/>
+          <text class="math" x="452" y="90" text-anchor="middle">u</text>
+          <text class="sig" id="sigU" x="470" y="90" text-anchor="start">0.00</text>
+          <g class="badge" transform="translate(428,126)"><circle r="10"/><text text-anchor="middle" y="4">3</text></g>
+          <text class="note" x="444" y="130">wheel motor</text>
+          <text class="note" x="444" y="148">a = −ℓ·u</text>
+          <rect class="blk" x="530" y="62" width="170" height="76" rx="6"/>
+          <text class="math" x="615" y="92" text-anchor="middle">1</text>
+          <line x1="560" y1="100" x2="670" y2="100" stroke="#1d2326" stroke-width="1.2"/>
+          <text class="math" x="615" y="124" text-anchor="middle">s² − g/ℓ</text>
+          <text class="note" x="615" y="158" text-anchor="middle">the pendulum (physics)</text>
+        </g>
+
+        <!-- output -->
+        <line class="w" x1="700" y1="100" x2="868" y2="100" marker-end="url(#arr)"/>
+        <text class="math" x="880" y="96">y = θ</text>
+        <text class="sig" id="sigY" x="740" y="90">0.00</text>
+
+        <!-- feedback / sensor -->
+        <g id="dSensor">
+          <polyline class="w" points="790,100 790,200 140,200 140,113" marker-end="url(#arr)"/>
+          <circle cx="790" cy="100" r="3" fill="#1d2326"/>
+          <g class="badge" transform="translate(440,200)"><circle r="10"/><text text-anchor="middle" y="4">1</text></g>
+          <text class="note" x="456" y="226" text-anchor="start">encoder at the hinge measures θ</text>
+        </g>
+      </svg>
+    </div>
+    <div class="plot-foot">Everything inside the dashed box is software: the minus sign of the junction is the line <code style="font-family:var(--f-mono);font-size:12px">e = r - th</code>, and the <i>s</i> in <i>k<sub>D</sub></i>·<i>s</i> is a difference quotient over one tick. Only the encoder, the wheel motor and the pendulum are physical. In slow motion the part of the loop that is running right now lights up here too.</div>
+  </div>
+
+  <div class="two">
+    <div class="plot-wrap">
+      <div class="plot-title"><span class="lbl">Closed-loop poles</span><span class="legend"><span>× open loop</span><span>○ PD zero</span><span>● closed loop</span></span></div>
+      <canvas id="splane" role="img" aria-label="s-plane with the closed-loop poles"></canvas>
+      <div class="plot-foot">Roots of <i>s</i>² + <i>k<sub>D</sub></i><i>s</i> + (<i>k<sub>P</sub></i> − <i>g</i>/<i>ℓ</i>). With P only they can at best sit on the imaginary axis, as on the slide.</div>
+    </div>
+    <div class="plot-wrap">
+      <div class="plot-title"><span class="lbl">Tilt angle θ(t)</span><span class="legend">last 8 s</span></div>
+      <canvas id="trace" role="img" aria-label="Plot of tilt angle over time"></canvas>
+      <div class="plot-foot">The pendulum falls over at about 70°.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const G_L = 9.81, ELL = 1;   // g/ℓ in s^-2, ℓ in m
+  const TS = 0.005;            // controller period
+  const H = 0.0005;            // physics step
+  const A_MAX = 30;            // motor limit on cart acceleration, m/s^2
+  const FALL = 1.22;           // ~70°
+  const T_WIN = 8;
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  let mode = "pd", slow = false;
+  let th = 0.2, om = 0, a = 0, fallen = false, paused = false;
+  let t = 0, nextTick = 0, tickNo = 0, thOld = 0.2;
+  let meas = { th: 0, dth: 0, e: 0, de: 0, u: 0, a: 0 };
+  let hist = [], drag = null;
+
+  const kp = () => parseFloat($("kp").value);
+  const kd = () => parseFloat($("kd").value);
+  const effKp = () => mode === "off" ? 0 : kp();
+  const effKd = () => mode === "pd" ? kd() : 0;
+  const randn = () => { let q = 0; while (!q) q = Math.random(); return Math.sqrt(-2 * Math.log(q)) * Math.cos(2 * Math.PI * Math.random()); };
+
+  // ---------- code listing ----------
+  const fmt = (v) => (v > -0.005 ? "  " : " −") + Math.abs(v).toFixed(2);
+  function lines() {
+    const uLine = mode === "pd" ? "  u   = kP*e + kD*de;" : mode === "p" ? "  u   = kP*e;" : "  u   = 0;";
+    return [
+      { src: "void loop() {  // every 5 ms", cmt: true },
+      { src: "  th  = enc.angle();", part: "sensor", val: () => "//" + fmt(meas.th) + " rad" },
+      { src: "  dth = (th-th_old)/Ts;", part: "code", val: () => "//" + fmt(meas.dth) + "  ← the s" },
+      { src: "  th_old = th;", part: "code", val: () => "" },
+      { src: "  e   = r - th;", part: "code", val: () => "// r = 0" },
+      { src: "  de  = -dth;", part: "code", val: () => "//" + fmt(meas.de) },
+      { src: uLine, part: "code", val: () => "//" + fmt(meas.u) },
+      { src: "  cart.accel(-L*u);", part: "motor", val: () => "//" + fmt(meas.a) + " m/s²" + (Math.abs(meas.a) >= A_MAX - 1e-9 ? " max" : "") },
+      { src: "}", cmt: true },
+    ];
+  }
+  let L = lines();
+  function buildCode() {
+    L = lines();
+    $("code").innerHTML = L.map((l, i) => `<div class="ln${l.cmt ? " cmt" : ""}"><span class="no">${i + 1}</span><span class="src"></span><span class="val"></span></div>`).join("");
+    [...$("code").children].forEach((el, i) => { el.querySelector(".src").textContent = L[i].src; });
+  }
+  let lastText = 0;
+  function updateText(now, liveIdx, livePart) {
+    const rows = $("code").children;
+    for (let i = 0; i < L.length; i++) rows[i].classList.toggle("live", i === liveIdx);
+    $("dSensor").classList.toggle("hot", livePart === "sensor");
+    $("dCode").classList.toggle("hot", livePart === "code");
+    $("dCtrl").classList.toggle("hot", livePart === "code");
+    $("dMotor").classList.toggle("hot", livePart === "motor");
+    if (now - lastText < 90 && !slow) return;
+    lastText = now;
+    for (let i = 0; i < L.length; i++) if (L[i].val) rows[i].querySelector(".val").textContent = L[i].val();
+    $("tickNo").textContent = tickNo.toLocaleString("en-US");
+    $("sigE").textContent = fmt(meas.e).trim();
+    $("sigU").textContent = "= " + fmt(meas.u).trim();
+    $("sigY").textContent = fmt(th).trim() + " rad";
+  }
+
+  // ---------- simulation ----------
+  function controllerTick() {
+    tickNo++;
+    const thm = th + 0.001 * randn();          // encoder reading
+    const dth = (thm - thOld) / TS; thOld = thm;
+    const e = 0 - thm, de = -dth;
+    let u = mode === "pd" ? kp() * e + kd() * de : mode === "p" ? kp() * e : 0;
+    let acc = Math.max(-A_MAX, Math.min(A_MAX, -ELL * u));
+    if (fallen) { u = 0; acc = 0; }
+    meas = { th: thm, dth, e, de, u, a: acc };
+    a = acc;
+  }
+  function physics(h) {
+    t += h;
+    while (t >= nextTick) { controllerTick(); nextTick += TS; }
+    if (drag || fallen) return;
+    const thdd = G_L * Math.sin(th) - (a / ELL) * Math.cos(th);
+    om += thdd * h; th += om * h;
+    if (Math.abs(th) > FALL) { fallen = true; th = Math.sign(th) * 1.42; om = 0; }
+  }
+
+  // ---------- poles ----------
+  function poles() {
+    const b = effKd(), c = effKp() - G_L, disc = b * b - 4 * c;
+    if (disc >= 0) { const r = Math.sqrt(disc); return [[(-b + r) / 2, 0], [(-b - r) / 2, 0]]; }
+    const r = Math.sqrt(-disc) / 2; return [[-b / 2, r], [-b / 2, -r]];
+  }
+  function stability() {
+    if (mode === "off") return ["bad", "Unstable"];
+    const p = poles(), maxRe = Math.max(p[0][0], p[1][0]);
+    if (maxRe > 1e-6) return ["bad", "Unstable"];
+    if (maxRe > -1e-6) return ["osc", "Oscillates forever"];
+    return ["ok", "Asymptotically stable"];
+  }
+
+  // ---------- drawing ----------
+  function fit(c) {
+    const r = c.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+    const w = Math.max(1, Math.round(r.width * d)), h = Math.max(1, Math.round(r.height * d));
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+    const g = c.getContext("2d"); g.setTransform(d, 0, 0, d, 0, 0); return { g, w: r.width, h: r.height };
+  }
+  function geom(w, h) {
+    const groundY = h - 50, wheelR = Math.max(9, h * 0.028), cartH = Math.max(34, h * 0.1);
+    const pivY = groundY - 2 * wheelR - cartH + 4;
+    const R = Math.min(pivY - 40, w * 0.55);
+    return { cx: w / 2, groundY, wheelR, cartH, cartW: Math.max(120, w * 0.34), pivY, R };
+  }
+  function badge(g, x, y, n, hot) {
+    g.beginPath(); g.arc(x, y, 9, 0, 2 * Math.PI); g.fillStyle = css("--accent"); g.fill();
+    if (hot) { g.beginPath(); g.arc(x, y, 14, 0, 2 * Math.PI); g.strokeStyle = css("--accent"); g.lineWidth = 2; g.stroke(); }
+    g.fillStyle = css("--card"); g.font = `700 11px ${css("--f-head")}`; g.textAlign = "center"; g.fillText(n, x, y + 4);
+  }
+
+  function drawScene(livePart) {
+    const { g, w, h } = fit($("scene"));
+    const ink = css("--ink"), soft = css("--ink-soft"), mute = css("--mute"), line = css("--line"), acc = css("--accent"), card = css("--card");
+    const G = geom(w, h);
+    g.clearRect(0, 0, w, h);
+
+    // ground
+    g.strokeStyle = ink; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(12, G.groundY); g.lineTo(w - 12, G.groundY); g.stroke();
+    g.strokeStyle = line; g.lineWidth = 1;
+    for (let sx = 18; sx < w - 12; sx += 12) { g.beginPath(); g.moveTo(sx, G.groundY); g.lineTo(sx - 7, G.groundY + 7); g.stroke(); }
+
+    // cart
+    const cl = G.cx - G.cartW / 2, ct = G.groundY - 2 * G.wheelR - G.cartH + 4;
+    g.fillStyle = card; g.strokeStyle = ink; g.lineWidth = 1.5;
+    g.beginPath(); g.roundRect ? g.roundRect(cl, ct, G.cartW, G.cartH, 6) : g.rect(cl, ct, G.cartW, G.cartH); g.fill(); g.stroke();
+    // wheels
+    for (const wx of [cl + G.cartW * 0.22, cl + G.cartW * 0.78]) {
+      const wy = G.groundY - G.wheelR;
+      g.beginPath(); g.arc(wx, wy, G.wheelR, 0, 2 * Math.PI); g.fillStyle = card; g.fill(); g.strokeStyle = ink; g.stroke();
+      g.beginPath(); for (let i = 0; i < 3; i++) { const an = i * Math.PI / 3; g.moveTo(wx - G.wheelR * Math.cos(an), wy - G.wheelR * Math.sin(an)); g.lineTo(wx + G.wheelR * Math.cos(an), wy + G.wheelR * Math.sin(an)); } g.lineWidth = 1; g.stroke(); g.lineWidth = 1.5;
+    }
+    // parts on the cart: motor (3) at the rear wheel, microcontroller (2) inside
+    const mx = cl + G.cartW * 0.22, my = ct + G.cartH * 0.45;
+    g.fillStyle = livePart === "motor" ? css("--accent-soft-strong") : css("--paper-2"); g.strokeStyle = livePart === "motor" ? acc : soft;
+    g.fillRect(mx - 14, my - 9, 28, 18); g.strokeRect(mx - 14, my - 9, 28, 18);
+    const bx = cl + G.cartW * 0.62, by = ct + G.cartH * 0.45;
+    g.fillStyle = livePart === "code" ? css("--accent-soft-strong") : css("--paper-2"); g.strokeStyle = livePart === "code" ? acc : soft;
+    g.fillRect(bx - 18, by - 9, 36, 18); g.strokeRect(bx - 18, by - 9, 36, 18);
+    for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(bx + i * 6, by - 9); g.lineTo(bx + i * 6, by - 13); g.moveTo(bx + i * 6, by + 9); g.lineTo(bx + i * 6, by + 13); g.stroke(); }
+    // wires motor–chip–encoder
+    g.setLineDash([2, 3]); g.strokeStyle = livePart ? acc : mute; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(mx + 14, my); g.lineTo(bx - 18, by); g.moveTo(bx, by - 13); g.lineTo(G.cx, ct + 2); g.stroke(); g.setLineDash([]);
+
+    // upright reference
+    g.setLineDash([4, 5]); g.strokeStyle = acc; g.globalAlpha = 0.5; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(G.cx, G.pivY); g.lineTo(G.cx, G.pivY - G.R - 20); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+
+    // pendulum
+    const tx = G.cx + G.R * Math.sin(th), ty = G.pivY - G.R * Math.cos(th);
+    g.strokeStyle = ink; g.lineWidth = 3.5; g.lineCap = "round";
+    g.beginPath(); g.moveTo(G.cx, G.pivY); g.lineTo(tx, ty); g.stroke();
+    g.beginPath(); g.arc(tx, ty, 13, 0, 2 * Math.PI); g.fillStyle = card; g.fill(); g.lineWidth = 1.8; g.stroke();
+    // hinge + encoder (1)
+    g.beginPath(); g.arc(G.cx, G.pivY, 9, Math.PI, 0); g.closePath();
+    g.fillStyle = livePart === "sensor" ? css("--accent-soft-strong") : card; g.fill(); g.strokeStyle = livePart === "sensor" ? acc : ink; g.lineWidth = 1.5; g.stroke();
+    g.beginPath(); g.arc(G.cx, G.pivY, 3, 0, 2 * Math.PI); g.fillStyle = ink; g.fill();
+    // angle arc
+    if (Math.abs(th) > 0.02) {
+      g.strokeStyle = acc; g.lineWidth = 1.5;
+      g.beginPath(); g.arc(G.cx, G.pivY, G.R * 0.45, -Math.PI / 2, -Math.PI / 2 + th, th < 0); g.stroke();
+      g.fillStyle = acc; g.font = `italic 15px ${css("--f-head")}`; g.textAlign = "center";
+      g.fillText("θ", G.cx + G.R * 0.53 * Math.sin(th / 2), G.pivY - G.R * 0.53 * Math.cos(th / 2) + 5);
+    }
+
+    // badges + labels
+    badge(g, G.cx - 24, G.pivY - 8, "1", livePart === "sensor");
+    badge(g, bx + 30, by - 2, "2", livePart === "code");
+    badge(g, mx - 26, my, "3", livePart === "motor");
+    g.font = `500 11px ${css("--f-head")}`; g.fillStyle = soft; g.textAlign = "right";
+    g.fillText("ENCODER", G.cx - 38, G.pivY - 4);
+
+    // commanded acceleration arrow
+    const mag = Math.min(1, Math.abs(a) / A_MAX);
+    if (mag > 0.01 && !fallen) {
+      const y0 = G.groundY + 34, len = 18 + mag * G.cartW * 0.9, dir = Math.sign(a);
+      g.strokeStyle = acc; g.fillStyle = acc; g.lineWidth = 2.5;
+      g.beginPath(); g.moveTo(G.cx, y0); g.lineTo(G.cx + dir * len, y0); g.stroke();
+      g.beginPath(); g.moveTo(G.cx + dir * (len + 8), y0); g.lineTo(G.cx + dir * len, y0 - 5); g.lineTo(G.cx + dir * len, y0 + 5); g.closePath(); g.fill();
+      g.font = `italic 14px ${css("--f-head")}`; g.textAlign = dir > 0 ? "right" : "left"; g.fillText("a", G.cx - dir * 8, y0 + 5);
+    }
+
+    // readouts
+    g.font = `500 11px ${css("--f-head")}`; g.fillStyle = soft; g.textAlign = "left";
+    g.fillText("θ", 16, 24);
+    g.fillStyle = ink; g.font = `400 13px ${css("--f-mono")}`;
+    g.fillText((th * 180 / Math.PI).toFixed(1) + "°", 32, 24);
+    if (paused) { g.fillStyle = soft; g.font = `500 11px ${css("--f-head")}`; g.textAlign = "right"; g.fillText("PAUSED", w - 16, 24); }
+    if (fallen) {
+      g.fillStyle = css("--warn"); g.font = `600 13px ${css("--f-head")}`; g.textAlign = "center";
+      g.fillText("It fell over. Pick P or PD and press Reset.", w / 2, 70);
+    } else if (drag) {
+      g.fillStyle = soft; g.font = `400 13px ${css("--f-head")}`; g.textAlign = "center";
+      g.fillText("You hold the pendulum. The cart already tries to get under it.", w / 2, 70);
+    }
+  }
+
+  function drawSplane() {
+    const { g, w, h } = fit($("splane"));
+    const ink = css("--ink"), soft = css("--ink-soft"), line = css("--line"), acc = css("--accent");
+    const reMin = -9, reMax = 5, imMax = 6.5, pad = 14;
+    const X = (re) => pad + (re - reMin) / (reMax - reMin) * (w - 2 * pad);
+    const Y = (im) => h / 2 - im / imMax * (h / 2 - pad);
+    g.clearRect(0, 0, w, h);
+    g.fillStyle = css("--accent-soft"); g.fillRect(pad, pad, X(0) - pad, h - 2 * pad);
+    g.strokeStyle = line; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(pad, Y(0)); g.lineTo(w - pad, Y(0)); g.moveTo(X(0), pad); g.lineTo(X(0), h - pad); g.stroke();
+    g.fillStyle = soft; g.font = `400 11px ${css("--f-mono")}`; g.textAlign = "center";
+    for (let re = -8; re <= 4; re += 2) { if (!re) continue; g.beginPath(); g.moveTo(X(re), Y(0) - 3); g.lineTo(X(re), Y(0) + 3); g.stroke(); g.fillText(re, X(re), Y(0) + 15); }
+    g.font = `500 11px ${css("--f-head")}`; g.textAlign = "left"; g.fillText("Im", X(0) + 5, pad + 10); g.textAlign = "right"; g.fillText("Re", w - pad, Y(0) - 6);
+    const s0 = Math.sqrt(G_L);
+    g.strokeStyle = ink; g.lineWidth = 1.5;
+    for (const re of [-s0, s0]) { const px = X(re), py = Y(0); g.beginPath(); g.moveTo(px - 5, py - 5); g.lineTo(px + 5, py + 5); g.moveTo(px + 5, py - 5); g.lineTo(px - 5, py + 5); g.stroke(); }
+    if (mode === "pd" && kd() > 0.05) {
+      const z = -kp() / kd();
+      if (z >= reMin) { g.beginPath(); g.arc(X(z), Y(0), 5, 0, 2 * Math.PI); g.strokeStyle = ink; g.stroke(); }
+    }
+    if (mode !== "off") {
+      const [kind] = stability();
+      const col = kind === "ok" ? acc : kind === "osc" ? css("--amber") : css("--warn");
+      for (const [re, im] of poles()) {
+        const px = X(Math.max(reMin + 0.2, re)), py = Y(Math.max(-imMax + 0.3, Math.min(imMax - 0.3, im)));
+        g.beginPath(); g.arc(px, py, 6, 0, 2 * Math.PI); g.fillStyle = col; g.fill();
+      }
+    }
+  }
+
+  function drawTrace() {
+    const { g, w, h } = fit($("trace"));
+    const soft = css("--ink-soft"), line = css("--line"), acc = css("--accent");
+    const padL = 36, padR = 10, padY = 12, lim = 80;
+    const Y = (deg) => padY + (1 - (deg + lim) / (2 * lim)) * (h - 2 * padY);
+    const X = (tt) => padL + (tt - (t - T_WIN)) / T_WIN * (w - padL - padR);
+    g.clearRect(0, 0, w, h);
+    g.font = `400 11px ${css("--f-mono")}`; g.textAlign = "right";
+    for (const d of [-70, -35, 0, 35, 70]) {
+      g.strokeStyle = d === 0 ? css("--mute") : line; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(padL, Y(d)); g.lineTo(w - padR, Y(d)); g.stroke();
+      g.fillStyle = soft; g.fillText(d + "°", padL - 6, Y(d) + 4);
+    }
+    g.strokeStyle = acc; g.lineWidth = 2; g.beginPath();
+    hist.forEach(([tt, v], i) => { const px = X(tt), py = Y(Math.max(-lim, Math.min(lim, v))); i ? g.lineTo(px, py) : g.moveTo(px, py); });
+    g.stroke();
+  }
+
+  // ---------- UI ----------
+  function readouts() {
+    $("kpVal").textContent = kp().toFixed(1) + " s⁻²";
+    $("kdVal").textContent = kd().toFixed(1) + " s⁻¹";
+    $("kd").disabled = mode !== "pd";
+    $("kp").disabled = mode === "off";
+    const [kind, text] = stability();
+    const s = $("status"); s.className = "status " + kind; s.textContent = text;
+    const ct = $("ctrlText");
+    const sub = (c) => `<tspan baseline-shift="sub" font-size="12">${c}</tspan>`;
+    ct.innerHTML = mode === "pd" ? `k${sub("P")} + k${sub("D")} · s` : mode === "p" ? "k" : "0  (off)";
+    $("dCtrl").classList.toggle("off", mode === "off");
+  }
+  document.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => {
+    mode = b.dataset.mode;
+    document.querySelectorAll("[data-mode]").forEach((q) => q.classList.toggle("on", q === b));
+    buildCode(); readouts();
+  }));
+  $("kp").addEventListener("input", readouts);
+  $("kd").addEventListener("input", readouts);
+  $("tap").addEventListener("click", () => { if (!fallen) om += (Math.random() < 0.5 ? -1 : 1) * 1.4; });
+  $("reset").addEventListener("click", () => { th = 0.2 * (Math.random() < 0.5 ? -1 : 1); thOld = th; om = 0; fallen = false; hist = []; });
+  $("pause").addEventListener("click", (ev) => {
+    paused = !paused; ev.currentTarget.classList.toggle("on", paused);
+    ev.currentTarget.setAttribute("aria-pressed", paused); ev.currentTarget.textContent = paused ? "Resume" : "Pause";
+  });
+  const FOOT = $("foot").textContent;
+  $("slow").addEventListener("click", (ev) => {
+    slow = !slow; ev.currentTarget.classList.toggle("on", slow); ev.currentTarget.setAttribute("aria-pressed", slow);
+    $("foot").textContent = slow
+      ? "Slowed down 240 times: one pass through the loop takes about 1.2 s here. The highlighted line, the glowing part on the cart and the lit block below are running right now."
+      : FOOT;
+  });
+
+  const scene = $("scene");
+  function pointerAngle(ev) {
+    const r = scene.getBoundingClientRect(), G = geom(r.width, r.height);
+    const dx = ev.clientX - r.left - G.cx, dy = G.pivY - (ev.clientY - r.top);
+    return Math.max(-1.0, Math.min(1.0, Math.atan2(dx, Math.max(10, dy))));
+  }
+  scene.addEventListener("pointerdown", (ev) => {
+    if (fallen) return;
+    scene.setPointerCapture(ev.pointerId); scene.classList.add("dragging");
+    drag = { last: performance.now() }; th = pointerAngle(ev); om = 0;
+  });
+  scene.addEventListener("pointermove", (ev) => {
+    if (!drag) return;
+    const now = performance.now(), nt = pointerAngle(ev), dt = Math.max(0.008, (now - drag.last) / 1000);
+    om = 0.6 * om + 0.4 * (nt - th) / dt; th = nt; drag.last = now;
+  });
+  const endDrag = () => { if (!drag) return; drag = null; scene.classList.remove("dragging"); om = Math.max(-4, Math.min(4, om)); };
+  scene.addEventListener("pointerup", endDrag);
+  scene.addEventListener("pointercancel", endDrag);
+
+  // the code lines that do something, in execution order (indices into L)
+  const STEPS = [1, 2, 3, 4, 5, 6, 7];
+  let last = performance.now(), lastHist = 0;
+  function frame(now) {
+    const real = Math.min(0.05, (now - last) / 1000); last = now;
+    let simDt = paused ? 0 : real * (slow ? 1 / 240 : 1);
+    while (simDt > 1e-9) { const hh = Math.min(H, simDt); physics(hh); simDt -= hh; }
+    if (!paused && (t - lastHist > 0.01 || slow)) { hist.push([t, th * 180 / Math.PI]); lastHist = t; }
+    while (hist.length && hist[0][0] < t - T_WIN) hist.shift();
+
+    let liveIdx = -1, livePart = null;
+    if (slow) {
+      const phase = (t - (nextTick - TS)) / TS;
+      liveIdx = STEPS[Math.min(STEPS.length - 1, Math.floor(phase * STEPS.length))];
+      livePart = L[liveIdx].part;
+    }
+    updateText(now, liveIdx, livePart);
+    drawScene(livePart); drawSplane(); drawTrace();
+    requestAnimationFrame(frame);
+  }
+
+  buildCode(); readouts();
+  requestAnimationFrame(frame);
+})();
+</script>
+<script>
+  // report content height so the site iframe can fit the demo
+  new ResizeObserver(() => parent.postMessage({ type: "viz-height", height: document.documentElement.scrollHeight }, "*")).observe(document.body);
+</script>
+
+</body>
+</html>

@@ -366,7 +366,9 @@
       {k:"tf-sine-machine", label:"A machine for sinusoids", live:true, src:"viz/week-05-sine-machine.html",
        note:"A sinusoid goes into a stable LTI system and a sinusoid of the same frequency comes out, scaled and shifted. Plug in s = jω: the length of G(jω) is the amplitude ratio, its angle the phase shift. Starts with the example from the slides, and you can type in your own G(s)."}]},
     {n:6,  t:"Poles & Zeros",                      date:"Oct 23", ex:true,  gaps:true , viz:[]},
-    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, viz:[]},
+    {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:false, gaps:false, viz:[
+      {k:"pendulum-pd", label:"Where does the PD controller live?", live:true, src:"viz/week-07-pendulum-pd.html",
+       note:"The inverted pendulum on a cart from the handout, kept upright by a PD controller. On the slide the controller is a block kP + kD·s; on the real cart it is a few lines of code on a microcontroller riding along. Switch between off, P and PD, push the pendulum, and use slow motion to follow one pass through the loop in the code, on the cart and in the block diagram."}]},
     {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, viz:[]},
     {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, viz:[]},
     {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, gaps:false, viz:[]},
@@ -423,6 +425,22 @@
   const svgWrap=inner=>`<svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${inner}</svg>`;
 
   const THUMBS={
+    // pendulum on a cart, wired to the few lines of code that keep it up
+    'pendulum-pd':()=>{
+      const px=78, py=88, L=62, a=0.22, bx=px+L*Math.sin(a), by=py-L*Math.cos(a);
+      const code=['th  = enc.angle();','dth = (th-th_old)/Ts;','e   = r - th;','u   = kP*e + kD*de;','cart.accel(-L*u);'];
+      return svgWrap(
+        `<path class="ink" d="M18 118H140"/><path class="soft" d="M${px} ${py}V20"/>`+
+        `<rect class="box" x="44" y="88" width="68" height="20" rx="3"/>`+
+        `<circle class="box" cx="58" cy="112" r="5"/><circle class="box" cx="98" cy="112" r="5"/>`+
+        `<rect x="82" y="93" width="18" height="10" style="fill:var(--accent);opacity:.35"/>`+
+        `<path class="ink" d="M${px} ${py}L${f1(bx)} ${f1(by)}" style="stroke-width:2.4"/><circle class="box" cx="${f1(bx)}" cy="${f1(by)}" r="7"/><circle class="dot-ink" cx="${px}" cy="${py}" r="2.5"/>`+
+        arr(96,126,128,126,'acc')+
+        `<path class="soft" d="M100 98H150" style="stroke:var(--accent)"/>`+
+        `<rect class="box" x="150" y="22" width="156" height="96" rx="6" style="stroke:var(--line)"/>`+
+        `<rect class="area" x="151" y="${22+12+3*17-11}" width="154" height="16"/>`+
+        code.map((c,i)=>`<text class="tag" x="160" y="${22+16+i*17}" style="fill:${i===3?'var(--accent)':'var(--ink-soft)'}">${c}</text>`).join(''));
+    },
     // u → box with its lid open, states inside → y
     'states-sensors':()=>{
       const step=curve(t=>t<0.3?0:1, 0, 1, t=>14+t*46, v=>88-v*30, 40);
