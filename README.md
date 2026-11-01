@@ -75,8 +75,12 @@ systems in `src/est/signals.ts`.
 After `pnpm install`, run
 `sh build.sh` from that folder. It builds each entry separately (a joint build
 would split React into a shared chunk that html-inline can't inline) and
-writes `viz/week-05-convolution.html`, `viz/week-05-sine-machine.html` and
-`viz/week-05-s-domain.html`.
+writes `viz/week-05-convolution.html`, `viz/week-05-sine-machine.html`,
+`viz/week-05-s-domain.html` and `viz/week-08-pole-specs.html`.
+
+The week 8 pole-specs demo (`spec.html`, UI in `src/spec/`) lives in the same
+project because it reuses the shared plot and formula helpers and the s-plane
+drawing from `src/est/splane.ts`.
 
 ### Adding a visualisation
 Visualisations live only on the Visualisations page/gallery, not per week.

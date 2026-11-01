@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "parcel conv.html sine.html est.html",
+    "dev": "parcel conv.html sine.html est.html spec.html",
     "typecheck": "tsc -p tsconfig.app.json",
     "build": "sh build.sh"
   },

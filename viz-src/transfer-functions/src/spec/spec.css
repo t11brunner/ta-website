@@ -1,0 +1,44 @@
+/* week 8: spec cards, family table and spec chips */
+.sym { white-space: nowrap; }
+.sym sub, .fx sub, .intro sub, .plot-foot sub, .callout sub, .sec-sub sub, .ledger sub, .cname sub, .chip sub, .hint sub, .seg sub { font-size: 0.7em; line-height: 0; }
+.paren { font-size: 1.35em; font-weight: 300; vertical-align: middle; }
+
+.spec-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.spec-card { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 6px; padding: 12px 14px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); min-width: 0; transition: border-color .14s, background .14s, transform .14s; }
+.spec-card:hover { border-color: var(--mute); transform: translateY(-2px); }
+.spec-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.spec-card.on { background: var(--accent-soft); border-color: transparent; }
+.spec-card .fx { font-size: 15px; line-height: 1.6; }
+.spec-card .num-line { color: var(--ink-soft); }
+.spec-card .val { font-family: var(--f-mono); font-size: 19px; font-weight: 500; margin-top: 2px; }
+.spec-card.on .val, .spec-card.on .lbl { color: var(--accent); }
+.spec-card .where { font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+
+.top-gap { margin-top: 22px; }
+.hint { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+
+
+.ledger .mono { font-family: var(--f-mono); font-size: 13px; white-space: nowrap; }
+.ledger th.keep, .ledger td.keep { color: var(--accent); background: var(--accent-soft); }
+.ledger th.keep { border-radius: 8px 8px 0 0; padding-left: 8px; }
+.ledger td.keep { padding-left: 8px; }
+.ledger th { text-transform: none; font-size: 14px; letter-spacing: 0; }
+.swatch { display: inline-block; width: 18px; height: 4px; border-radius: 2px; vertical-align: middle; }
+.panel.ledger-wrap { margin-top: 0; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.chip.ok { background: var(--accent-soft); color: var(--accent); }
+.chip.bad { background: var(--warn-soft); color: var(--warn); }
+
+@media (max-width: 860px) {
+  .spec-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .spec-cards { grid-template-columns: 1fr; }
+}
+/* s-plane panels use one scale on both axes, so they are narrow and tall */
+.est-row.spec-split { grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); }
+@media (max-width: 860px) { .est-row.spec-split { grid-template-columns: 1fr; } }
+.spec-split .plot-title { flex-wrap: wrap; row-gap: 4px; }
+.spec-split .plot-title > .lbl { white-space: nowrap; }

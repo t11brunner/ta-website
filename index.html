@@ -369,7 +369,9 @@
     {n:7,  t:"Feedback & Root Locus",              date:"Oct 30", ex:true,  gaps:true , viz:[
       {k:"pendulum-pd", label:"Where does the PD controller live?", live:true, src:"viz/week-07-pendulum-pd.html",
        note:"The inverted pendulum on a cart from the handout, kept upright by a PD controller. On the slide the controller is a block kP + kD·s; on the real cart it is a few lines of code on a microcontroller riding along. Switch between off, P and PD, push the pendulum, and use slow motion to follow one pass through the loop in the code, on the cart and in the block diagram."}]},
-    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, viz:[]},
+    {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:false, gaps:false, viz:[
+      {k:"pole-specs", label:"Reading specs off the poles", live:true, src:"viz/week-08-pole-specs.html",
+       note:"Rise time, peak time, overshoot and settling time all follow from where the pole pair σ ± jω sits. Drag the pole and pick a spec to see what it depends on: the height ω, the distance σ from the jω axis, or the tilt φ. Then compare poles along one line, and turn given specs into the region of the s-plane where the poles must lie."}]},
     {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, viz:[]},
     {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, gaps:false, viz:[]},
     {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:false, gaps:false, viz:[]},
