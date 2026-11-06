@@ -517,6 +517,32 @@
         arr(198,70,218,70,'acc')+`<path class="acc redraw" pathLength="1" d="${out}"/>`+
         `<text class="lbl" x="14" y="122">u</text><text class="lbl acc-t" x="222" y="122">y</text><text class="tag" x="306" y="122" text-anchor="end">same ω</text>`);
     },
+    // dark s-plane with the pole pair and its tilt φ, at one scale; the step response it fixes, with envelope and overshoot
+    'pole-specs':()=>{
+      const sg=-0.9, w=2.3, ox=104, oy=70, sc=20;
+      const px=ox+sg*sc, pu=oy-w*sc, pd=oy+w*sc;
+      const a=Math.atan(-sg/w), r=20;
+      const X=t=>160+t*(146/6), Y=v=>116-v*52;
+      const y=curve(t=>1-Math.exp(sg*t)*(Math.cos(w*t)-sg/w*Math.sin(w*t)), 0, 6, X, Y);
+      const env=s=>curve(t=>1+s*Math.exp(sg*t), 0, 6, X, Y);
+      const tp=Math.PI/w, mp=Math.exp(sg*tp), xp=X(tp), y1=Y(1), yp=Y(1+mp);
+      const x=(cx,cy,c)=>`<path d="M${cx-4} ${cy-4}L${cx+4} ${cy+4}M${cx+4} ${cy-4}L${cx-4} ${cy+4}" style="stroke:${c};stroke-width:1.8;fill:none"/>`;
+      const W='#e9eef1', A='oklch(0.81 0.12 75)', D='rgba(222,230,235,.5)';
+      return svgWrap(
+        `<rect x="14" y="12" width="112" height="116" rx="9" style="fill:oklch(0.255 0.026 248)"/>`+
+        `<path d="M22 ${oy}H120M${ox} 18V122" style="stroke:rgba(255,255,255,.28);stroke-width:1;fill:none"/>`+
+        `<path d="M${f1(px)} ${f1(pu)}H${ox}M${f1(px)} ${f1(pu)}V${oy}" style="stroke:${D};stroke-width:1;stroke-dasharray:2 3;fill:none"/>`+
+        `<path d="M${ox} ${oy}L${f1(px)} ${f1(pu)}M${ox} ${oy}L${f1(px)} ${f1(pd)}" style="stroke:${D};stroke-width:1.2;fill:none"/>`+
+        `<path d="M${ox} ${oy-r}A${r} ${r} 0 0 0 ${f1(ox-r*Math.sin(a))} ${f1(oy-r*Math.cos(a))}" style="stroke:${W};stroke-width:1.3;fill:none"/>`+
+        `<text class="lbl" x="${f1(ox-9)}" y="${oy-25}" style="fill:${W};font-size:11px">φ</text>`+
+        x(px,pu,A)+x(px,pd,A)+
+        arr(132,70,152,70)+
+        `<path class="rule" d="M160 ${y1}H306"/><path class="soft" d="${env(1)}"/><path class="soft" d="${env(-1)}"/>`+
+        `<path class="soft" d="M${f1(xp)} ${f1(yp)}V116"/><path class="rule" d="M160 116H306"/>`+
+        `<path class="acc redraw" pathLength="1" d="${y}"/><circle class="dot-acc" cx="${f1(xp)}" cy="${f1(yp)}" r="3.5"/>`+
+        `<text class="lbl acc-t" x="${f1(xp+9)}" y="${f1(yp-3)}">M<tspan dy="3" font-size="9">p</tspan></text>`+
+        `<text class="tag" x="306" y="24" text-anchor="end">M<tspan dy="2" font-size="7.5">p</tspan><tspan dy="-2"> = exp(σπ/ω)</tspan></text>`);
+    },
   };
 
   // ---- gallery ----
