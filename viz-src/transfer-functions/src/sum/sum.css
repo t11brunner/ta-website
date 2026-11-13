@@ -1,0 +1,8 @@
+/* Sum-of-exponentials demo: s-plane, turning arrows, time plot side by side. */
+.sum-row { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.1fr) minmax(0, 1.2fr); gap: 16px; margin-bottom: 16px; align-items: stretch; }
+.sum-fx { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 16px; }
+.sum-fx .fx { font-size: 18px; }
+.sum-fx .note { font-size: 13px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .sum-row { grid-template-columns: 1fr; }
+}

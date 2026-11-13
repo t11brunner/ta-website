@@ -5,7 +5,7 @@
 set -e
 cd "$(dirname "$0")"
 rm -rf dist .parcel-cache
-for pair in conv:week-05-convolution sine:week-05-sine-machine est:week-05-s-domain spec:week-08-pole-specs; do
+for pair in conv:week-05-convolution sine:week-05-sine-machine est:week-05-s-domain sum:week-05-exp-sum spec:week-08-pole-specs; do
   entry=${pair%%:*}
   out=${pair#*:}
   npx parcel build "$entry.html" --dist-dir "dist/$entry" --no-source-maps --no-cache

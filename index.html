@@ -361,6 +361,8 @@
     {n:5,  t:"Transfer Functions",                 date:"Oct 16", ex:true,  gaps:true , viz:[
       {k:"tf-convolution", label:"Convolution vs multiplication", live:true, src:"viz/week-05-convolution.html",
        note:"Why leave the time domain at all? There, every block acts through a convolution integral that has to be recomputed for every instant. In the s-domain the same block just multiplies. Watch both compute the same output, and see what happens to the cost when you chain two blocks."},
+      {k:"tf-exp-sum", label:"Every input is a sum of exponentials", live:true, src:"viz/week-05-exp-sum.html",
+       note:"Any input can be written as a sum of pieces U·e^st. Each piece is an arrow in the complex plane that turns and shrinks as s tells it to. Put the arrows tip to tail and the end of the chain traces the input: two arrows make a cosine, one makes a step, many make a square wave."},
       {k:"tf-s-domain", label:"From time to the s-plane", live:true, hidden:true, src:"viz/week-05-s-domain.html",
        note:"Instead of following a signal instant by instant, take it apart into pieces e^st, one for every point s of the complex plane. Each piece passes through the system unchanged except for one complex factor G(s). That is why e^st is the standard test input, and why outputs get easy: multiply every piece by G(s), then add them back up."},
       {k:"tf-sine-machine", label:"A machine for sinusoids", live:true, src:"viz/week-05-sine-machine.html",
@@ -505,6 +507,22 @@
         arr(160,70,178,70)+
         `<path class="rule" d="M184 104H306"/><path class="acc redraw" pathLength="1" d="${u}"/>`+
         `<text class="lbl acc-t" x="184" y="126">u</text><text class="tag" x="306" y="24" text-anchor="end">u = Σ e<tspan dy="-4" font-size="7.5">st</tspan></text>`);
+    },
+    // two arrows turning in opposite directions, tip to tail; their sum traces a cosine
+    'tf-exp-sum':()=>{
+      const ox=78, oy=70, L=36, a=0.9;
+      const mx=ox+L*Math.cos(a), my=oy-L*Math.sin(a), ex=ox+2*L*Math.cos(a);
+      const X=t=>176+t*(130/(4*Math.PI)), Y=v=>70-v*30;
+      const c=curve(t=>Math.cos(t), 0, 4*Math.PI, X, Y);
+      const A='oklch(0.64 0.13 62)';
+      return svgWrap(
+        `<path class="rule" d="M22 ${oy}H152M${ox} 16V124M176 70H306"/>`+
+        arr(ox,oy,mx,my,'acc')+
+        `<path d="M${f1(mx)} ${f1(my)}L${f1(ex)} ${oy}" style="stroke:${A};stroke-width:1.8;fill:none"/>`+
+        `<circle class="dot-ink" cx="${f1(ex)}" cy="${oy}" r="3.5"/>`+
+        `<path class="soft" d="M${f1(ex)} ${oy}V${f1(Y(Math.cos(a)))}H176"/>`+
+        `<path class="acc redraw" pathLength="1" d="${c}"/>`+
+        `<text class="lbl" x="176" y="122">u</text><text class="tag" x="306" y="24" text-anchor="end">u = Σ U e<tspan dy="-4" font-size="7.5">st</tspan></text>`);
     },
     // u → [G(s)] → y: same frequency, scaled and shifted
     'tf-sine-machine':()=>{

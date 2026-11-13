@@ -65,9 +65,9 @@ Same setup as the pendulum demo. Source: `viz-src/states-sensors/`
 demo comes from the `note` field of its entry in `WEEKS`.
 
 ### Editing the week 5 transfer-function demos
-Three demos share one project: `viz-src/transfer-functions/`. Each has its
-own entry (`conv.html`, `sine.html`, `est.html`) and its UI in `src/conv/`,
-`src/sine/`, `src/est/`. Complex numbers, polynomials,
+Four demos share one project: `viz-src/transfer-functions/`. Each has its
+own entry (`conv.html`, `sine.html`, `est.html`, `sum.html`) and its UI in
+`src/conv/`, `src/sine/`, `src/est/`, `src/sum/`. Complex numbers, polynomials,
 partial fractions and the LTI simulation are in `src/shared/math.ts`, the
 parser for typed polynomials is in `src/shared/polyparse.ts`, and the plot
 helpers and styles are in `src/shared/`. The s-plane demo (`est`) keeps its
@@ -76,7 +76,8 @@ After `pnpm install`, run
 `sh build.sh` from that folder. It builds each entry separately (a joint build
 would split React into a shared chunk that html-inline can't inline) and
 writes `viz/week-05-convolution.html`, `viz/week-05-sine-machine.html`,
-`viz/week-05-s-domain.html` and `viz/week-08-pole-specs.html`.
+`viz/week-05-s-domain.html`, `viz/week-05-exp-sum.html` and
+`viz/week-08-pole-specs.html`.
 
 The week 8 pole-specs demo (`spec.html`, UI in `src/spec/`) lives in the same
 project because it reuses the shared plot and formula helpers and the s-plane
