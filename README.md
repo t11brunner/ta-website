@@ -83,6 +83,13 @@ The week 8 pole-specs demo (`spec.html`, UI in `src/spec/`) lives in the same
 project because it reuses the shared plot and formula helpers and the s-plane
 drawing from `src/est/splane.ts`.
 
+The week 9 Bode sketching demo (`bode.html`, UI in `src/bode/`) is in the same
+project too. Its systems and the straight-line rules are in `src/bode/model.ts`;
+`build.sh` writes it to `viz/week-09-bode-sketch.html`.
+
+The week 9 pole-zero arrows demo (`pz.html`, UI in `src/pz/`) reuses
+`src/bode/model.ts` and is written to `viz/week-09-pole-zero-arrows.html`.
+
 ### Adding a visualisation
 Visualisations live only on the Visualisations page/gallery, not per week.
 1. Add `{k:"unique-key", label:"Demo name"}` to that week's `viz:[ ]`.

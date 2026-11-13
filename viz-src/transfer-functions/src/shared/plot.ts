@@ -32,6 +32,9 @@ export interface FrameOpts {
   xLog?: boolean
   yLog?: boolean
   yTickFmt?: (v: number) => string
+  xTickFmt?: (v: number) => string
+  /** Explicit y ticks instead of the automatic ones. */
+  yTicks?: number[]
   margin?: Partial<{ l: number; r: number; t: number; b: number }>
 }
 
@@ -84,7 +87,7 @@ export function frame(ctx: CanvasRenderingContext2D, w: number, h: number, o: Fr
 
   ctx.font = `10px ${MONO}`
   ctx.lineWidth = 1
-  ticks(o.y[0], o.y[1], !!o.yLog, 4).forEach((v) => {
+  ;(o.yTicks ?? ticks(o.y[0], o.y[1], !!o.yLog, 4)).forEach((v) => {
     const y = Math.round(sy(v)) + 0.5
     ctx.strokeStyle = !o.yLog && v === 0 ? ZERO : GRID
     ctx.beginPath()
@@ -106,7 +109,7 @@ export function frame(ctx: CanvasRenderingContext2D, w: number, h: number, o: Fr
     ctx.fillStyle = MUTE
     ctx.textAlign = 'center'
     const last = i === xt.length - 1 && o.xUnit
-    ctx.fillText(tickLabel(v) + (last ? ' ' + o.xUnit : ''), x, M.t + ph + 15)
+    ctx.fillText((o.xTickFmt ? o.xTickFmt(v) : tickLabel(v)) + (last ? ' ' + o.xUnit : ''), x, M.t + ph + 15)
   })
   ctx.strokeStyle = LINE
   ctx.strokeRect(M.l + 0.5, M.t + 0.5, pw, ph)

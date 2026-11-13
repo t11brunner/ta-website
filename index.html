@@ -374,7 +374,11 @@
     {n:8,  t:"Time-Domain Specifications",         date:"Nov 6",  ex:true,  gaps:true , viz:[
       {k:"pole-specs", label:"Reading specs off the poles", live:true, src:"viz/week-08-pole-specs.html",
        note:"Rise time, peak time, overshoot and settling time all follow from where the pole pair σ ± jω sits. Drag the pole and pick a spec to see what it depends on: the height ω, the distance σ from the jω axis, or the tilt φ. Then compare poles along one line, and turn given specs into the region of the s-plane where the poles must lie."}]},
-    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, viz:[]},
+    {n:9,  t:"Frequency Response",                 date:"Nov 13", ex:false, gaps:false, viz:[
+      {k:"bode-sketch", label:"Sketching a Bode plot", live:true, src:"viz/week-09-bode-sketch.html",
+       note:"The handout's recipe, step by step: find where the plot starts, sort the poles and zeros, then walk along ω and bend the line at each one. Underneath, every pole and zero has its own piece and the sketch is their sum. Also shows how the start changes when the system has an integrator or a differentiator."},
+      {k:"pz-arrows", label:"Reading G(jω) off the pole-zero map", live:true, src:"viz/week-09-pole-zero-arrows.html",
+       note:"Plug in s = jω and every factor of G becomes an arrow from a pole or zero to the point jω. Lengths of the zero arrows divided by lengths of the pole arrows give the magnitude, zero angles minus pole angles give the phase. Move jω up the axis and watch the arrows trace the Bode and polar plots, and see why a right-half-plane zero lowers the phase."}]},
     {n:10, t:"Nyquist Criterion",                  date:"Nov 20", ex:false, gaps:false, viz:[]},
     {n:11, t:"Frequency-Domain Specifications",    date:"Nov 27", ex:false, gaps:false, viz:[]},
     {n:12, t:"Time Delays",                        date:"Dec 4",  ex:false, gaps:false, viz:[]},
@@ -523,6 +527,36 @@
         `<path class="soft" d="M${f1(ex)} ${oy}V${f1(Y(Math.cos(a)))}H176"/>`+
         `<path class="acc redraw" pathLength="1" d="${c}"/>`+
         `<text class="lbl" x="176" y="122">u</text><text class="tag" x="306" y="24" text-anchor="end">u = Σ U e<tspan dy="-4" font-size="7.5">st</tspan></text>`);
+    },
+    // straight-line Bode sketch bending at a zero and two poles, with the exact curve underneath
+    'bode-sketch':()=>{
+      const X=l=>30+l*(270/4), Y=d=>70-d*1.9;
+      const ex=curve(l=>{ const w=10**l; return 20*Math.log10(Math.hypot(w,1)/(Math.hypot(w,10)*Math.hypot(w,300)/3000)); }, 0-1, 3, X, Y).replace(/NaN/g,'0');
+      const G='oklch(0.52 0.11 160)', R='oklch(0.55 0.15 30)', A='oklch(0.64 0.13 62)';
+      const tick=(l,c)=>`<path d="M${f1(X(l))} 20V112" style="stroke:${c};stroke-width:1;stroke-dasharray:2 3;fill:none"/><path d="M${f1(X(l))} 106V118" style="stroke:${c};stroke-width:2.4;fill:none"/>`;
+      return svgWrap(
+        `<path class="rule" d="M30 112H306M30 20V112"/>`+tick(0,G)+tick(1,R)+tick(2.477,R)+
+        `<path class="acc redraw" pathLength="1" d="${ex}" style="stroke-width:1.6"/>`+
+        `<path d="M${X(-1)} ${Y(0)}L${X(0)} ${Y(0)}L${X(1)} ${Y(20)}L${f1(X(2.477))} ${Y(20)}L${X(3)} ${f1(Y(20-20*0.523))}" style="stroke:${A};stroke-width:2.2;fill:none;stroke-linejoin:round"/>`+
+        `<circle cx="${X(-1)}" cy="${Y(0)}" r="3.5" style="fill:${A}"/>`+
+        `<text class="tag" x="306" y="132" text-anchor="end">ω</text><text class="tag" x="30" y="132">dB</text>`);
+    },
+    // dark pole-zero map with arrows from two poles and a zero to the point jω; the phase curve it produces
+    'pz-arrows':()=>{
+      const G='oklch(0.8 0.12 160)', R='oklch(0.76 0.13 30)', W='#e9eef1';
+      const oy=104, px=118, py=44;
+      const ar=(x,c)=>{ const m=Math.hypot(px-x,py-oy), ux=(px-x)/m, uy=(py-oy)/m;
+        return `<path d="M${x} ${oy}L${f1(px-ux*6)} ${f1(py-uy*6)}" style="stroke:${c};stroke-width:1.6;fill:none"/>`; };
+      const x=(cx,c)=>`<path d="M${cx-4} ${oy-4}L${cx+4} ${oy+4}M${cx+4} ${oy-4}L${cx-4} ${oy+4}" style="stroke:${c};stroke-width:1.8;fill:none"/>`;
+      const ph=curve(l=>{ const w=10**l; return 180-(Math.atan(w)+Math.atan(w/10)+Math.atan(w/100))*180/Math.PI; }, -1, 4, l=>176+(l+1)*26, v=>70-(v-45)*0.32);
+      return svgWrap(
+        `<rect x="14" y="12" width="140" height="116" rx="9" style="fill:oklch(0.255 0.026 248)"/>`+
+        `<path d="M22 ${oy}H148M${px} 18V122" style="stroke:rgba(255,255,255,.28);stroke-width:1;fill:none"/>`+
+        ar(34,R)+ar(82,R)+ar(138,G)+x(34,R)+x(82,R)+
+        `<circle cx="138" cy="${oy}" r="4" style="fill:oklch(0.255 0.026 248);stroke:${G};stroke-width:1.8"/>`+
+        `<circle cx="${px}" cy="${py}" r="4" style="fill:${W}"/>`+
+        `<path class="rule" d="M176 112H306"/><path class="acc redraw" pathLength="1" d="${ph}"/>`+
+        `<text class="tag" x="306" y="24" text-anchor="end">∠G(jω)</text><text class="tag" x="306" y="126" text-anchor="end">ω</text>`);
     },
     // u → [G(s)] → y: same frequency, scaled and shifted
     'tf-sine-machine':()=>{

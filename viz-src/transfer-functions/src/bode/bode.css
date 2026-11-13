@@ -1,0 +1,21 @@
+/* Bode sketching demo: poles red, zeros green, the sketch amber, the exact curve blue (as in the handout). */
+:root { --zero: oklch(0.52 0.11 160); --zero-soft: oklch(0.52 0.11 160 / 0.13); }
+.zr { color: var(--zero); }
+.pl { color: var(--warn); }
+.bode-row { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 16px; margin-bottom: 16px; align-items: start; }
+.bode-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.bode-step { font-size: 14px; line-height: 1.6; }
+.bode-step b { font-weight: 600; }
+.bode-step .fx { font-size: 15px; display: block; margin: 8px 0; }
+.lanes-h { margin: 10px 0 2px; }
+.sw.amb2 { border-top-color: var(--amber); }
+
+table.rule { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+table.rule th { font-family: var(--f-mono); font-size: 12px; font-weight: 400; color: var(--ink-soft); padding: 7px 6px; }
+table.rule td { border: 1px solid var(--line); padding: 8px 6px; line-height: 1.3; transition: background .14s; }
+table.rule td.on.pl { background: var(--warn-soft); font-weight: 600; }
+table.rule td.on.zr { background: var(--zero-soft); font-weight: 600; }
+
+@media (max-width: 860px) {
+  .bode-row { grid-template-columns: 1fr; }
+}
